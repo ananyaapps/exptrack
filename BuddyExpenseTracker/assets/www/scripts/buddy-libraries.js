@@ -157,7 +157,6 @@
 		return this.each(function() {
 			var $this = $(this);
 			var tagName = $this.prop('tagName').toLowerCase();
-			logger.log(tagName);
 			//un select the contact by default
 			var sel_status;
 			//No parameter, default action
@@ -183,7 +182,6 @@
 
 					case 'input':
 						$this.attr('data-theme', 'b').parent().attr('data-theme', 'b').removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
-						logger.log($this);
 						break;
 
 					default:
