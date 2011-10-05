@@ -313,7 +313,7 @@ AddBuddyPickObj = (function() {
 			var actLength = 0;
 			var list = '';
 			for( index = 0; index < length; index++) {
-				if(contacts[index].displayName !== undefined) {
+				if(contacts[index].displayName !== null) {
 					actLength++;
 					//Store the relevant contact
 					dispContacts.push(contacts[index]);
