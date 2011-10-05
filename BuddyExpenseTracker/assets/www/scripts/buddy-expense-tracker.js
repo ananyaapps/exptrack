@@ -402,6 +402,8 @@ EditBuddyObj = (function() {
 	var $msgBox;
 	//message to display
 	var $message;
+	//number of contacts selected
+	var noContacts = 0;
 
 	//Default fail CB for database queries
 	function failureCB(error) {
@@ -409,6 +411,11 @@ EditBuddyObj = (function() {
 			status : 'error'
 		});
 
+	};
+
+	//Callback function , if the database is suscessfully updated
+	function suscessCB() {
+		$msgBox.html($message + ' suscessful').setStatus();
 	};
 
 	//Function to handle the click on the checkbox
@@ -422,6 +429,41 @@ EditBuddyObj = (function() {
 		var value = $(this).attr('data-action');
 		switch(value) {
 			case 'Delete':
+				//prasanna : some optimisations can be done here
+				$buddySelList.each(function() {
+					if($(this).data('sel-status') === true) {
+						noContacts++;
+					}
+				});
+				//Atleast one contact needs to be selected
+				if(noContacts === 0) {
+					$msgBox.html('Please select buddies to delete').setStatus({
+						status : "error"
+					});
+				} else {
+					//Confirm with the user before deleting
+					if(confirm('Are you sure to delete ' + noContacts + ' buddies?')) {
+						$message = "Delete " + noContacts + " buddies";
+						$msgBox.html($message + " in progress.Please wait").setStatus();
+						$buddySelList.each(function(index) {
+							var $this = $(this);
+							if($this.data('sel-status') === true) {
+								//Delete the buddy from db
+								$this.data('this_buddy').erase(suscessCB, failureCB);
+								//imp : prasanna : dependency on jqm , may break
+								//remove the list element
+								$this.parent().parent().remove();
+								//buddies[index].erase(suscessCB, failureCB);
+							}
+						});
+						
+					}
+					else{
+						$msgBox.setStatus();
+					}
+				}
+				//Reset this before leaving
+				noContacts = 0; 
 				break;
 
 			case 'SelectAll':
@@ -436,6 +478,9 @@ EditBuddyObj = (function() {
 				break;
 
 		}
+
+		//prevent defaults
+		return false;
 
 	};
 
@@ -465,19 +510,24 @@ EditBuddyObj = (function() {
 					str += buddies[i].getFormattedText('EditBuddies');
 				}
 				$buddyList.html(str).listview('refresh');
-				$buddySelList = $buddyList.find('.buddy_select');
+				$buddySelList = $buddyList.find('.buddy_select').each(function(index){
+					//Store the associated buddy object in DOM
+					$(this).data('this_buddy',buddies[index]);
+				});
 				$buddySelList.button();
 				$message = "Found " + buddies.length + " Buddies";
 				$msgBox.html($message);
 			};
 			$message = "Populating buddy list";
 			$msgBox.html($message + ' Please wait');
-			database.findBuddy(['name', 'total_expense'], buddySuscess, failureCB);
+			database.findBuddies(['name', 'total_expense'], buddySuscess, failureCB);
 		},
 		//do some cleanup stuff after the page is gone
 		pagehide : function() {
 			$msgBox.html('');
 			$buddyList.html('').listview('refresh');
+			//Clear the message box
+			$msgBox.html('');
 
 		}
 	};

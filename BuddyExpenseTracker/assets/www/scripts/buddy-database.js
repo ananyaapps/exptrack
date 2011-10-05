@@ -50,21 +50,59 @@ database = function() {
 		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
 		failureCB = failureCB || dbObject.defaults.userFailCB;
 		message = 'Saving buddy to the database';
+		//hook the suscess callback to set the id
+		hookSuscessCB = function(tx, resultSet){
+			that.id = resultSet.insertId;
+			//Call the original suscess CB
+			suscessCB();
+			
+		};
 		//Save as new entry in the database only if id is -1
 		if(this.id === -1) {
 			db.transaction(function(tx) {
-				tx.executeSql('INSERT INTO ' + BUDDY_TABLE + '(name, number, email,total_expense ) VALUES (?, ?, ?, ?);', [that.name, that.number, that.email, that.total_expense], suscessCB);
+				tx.executeSql('INSERT INTO ' + BUDDY_TABLE + '(name, number, email,total_expense ) VALUES (?, ?, ?, ?);', [that.name, that.number, that.email, that.total_expense], hookSuscessCB);
 			}, failureCB);
 		}
+		//todo : prasanna : save the already existing buddy also
 	};
-	
-	Buddy.prototype.getFormattedText = function(format){
+	//Function to erase buddy from the database
+	Buddy.prototype.erase = function(suscessCB, failureCB) {
+		//cache the object
+		var that = this;
+		var custom_error = {};
+		//hook the suscess callback
+		var hookSuscessFunction = function(){
+			//Set the invalid id, so that the delete attempt on this object fails
+			that.id = -1;
+			//Now call the desired callback
+			suscessCB();
+		};
+		//if callbacks are not provided, use default callbacks
+		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
+		failureCB = failureCB || dbObject.defaults.userFailCB;
+		message = 'Erasing buddy from database';
+		//Delete only if the proper id is available
+		if(this.id === -1 || this.id === undefined || this.id === null) {
+			//id not set properly, delete failed
+			custom_error.code = 101;
+			custom_error.message = 'id not set properly';
+			failureCB(custom_error);
+		} else {
+			//proper id available, delete the buddy from the database
+			db.transaction(function(tx) {
+				var query = 'DELETE FROM ' + BUDDY_TABLE + ' WHERE id = ' + that.id;
+				logger.log('query ' + query);
+				tx.executeSql(query , [], suscessCB);
+			}, failureCB);
+		}
+		//todo : prasanna : delete the entries from expense table also
+	};
+
+	Buddy.prototype.getFormattedText = function(format) {
 		var str = '';
-		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + 
-		'</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense/100) + '</strong></p></li>';
+		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense / 100) + '</strong></p></li>';
 		return str;
 	}
-	
 	var dbObject = {
 		init : function() {
 			db = window.openDatabase(NAME, VERSION, NAME, SIZE);
@@ -79,16 +117,15 @@ database = function() {
 			var buddy = new Buddy(values);
 			return buddy;
 		},
-		
 		//function to find buddies. suscessCB receives the list of Buddy objects found in the database
-		findBuddy : function(buddyFields, suscessCB, failureCB) {
+		findBuddies : function(buddyFields, suscessCB, failureCB) {
 			failureCB = failureCB || this.defaults.userFailCB;
 			suscessCB = suscessCB || this.defaults.userSuscessCB;
 			//Add the id also in the search crieteria
 			buddyFields.push('id');
 			var query = 'SELECT ' + buddyFields.join(', ') + ' FROM ' + BUDDY_TABLE;
 			//Suscess handler for the db query.This function receives the transcation object & results
-			var suscessHandler = function(tx, results){
+			var suscessHandler = function(tx, results) {
 				//cache the rows
 				var rows = results.rows;
 				var length = rows.length;
@@ -96,7 +133,7 @@ database = function() {
 				//start with an empty array
 				var buddies = [];
 				//create buddy objects from he database result
-				for (i = 0; i < length ; i++){
+				for( i = 0; i < length; i++) {
 					buddies.push(new Buddy(rows.item(i)));
 				}
 				//Call the user callback with the result set
