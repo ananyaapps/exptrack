@@ -1,0 +1,23 @@
+label.missing  {
+	color:#FF0000;
+	font-weight:bold;
+}
+
+.buddy_error {
+	color:#FF0000;
+	font-weight:bold;
+}
+
+.buddy_msg{
+	font-weight:bold;
+}
+
+.buddy_list_item{
+	display: inline;
+	position:absolute;
+	top:0.75em;
+	margin-left: 0.5em;
+	overflow : hidden;
+	width : 50%;
+}
+

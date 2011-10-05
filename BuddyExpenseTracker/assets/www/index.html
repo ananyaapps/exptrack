@@ -1,0 +1,147 @@
+<!-- Author : Prasanna Bhat -->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Buddy Expense Tracker</title>
+	<link rel="stylesheet" href="css/jquery.mobile-1.0b3.css" />
+	<link rel="stylesheet" href="css/buddy-expense-tracker.css" />
+	<script src="scripts/jquery-1.6.2.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/phonegap-1.0.0.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/buddy-libraries.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/buddy-expense-tracker.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/buddy-database.js"></script>
+	<script type="text/javascript" src="scripts/jquery.mobile-1.0b3.js"></script>
+</head>
+<body>
+	<!-- Start of first page: HomeScreen -->
+	<div data-role="page" id="HomeScreen" data-theme="b">
+		<div data-role="header" data-position="fixed">
+			<h1>Buddy Expense Tracker</h1>
+		</div>
+		<!-- /header -->
+		<div class="ui-grid-a" id="HomeScreenButtons">
+			<a href="#Dummy" data-role="button" data-action="ListExpense">Expense List</a>
+			<a href="#Dummy" data-role="button" data-action="AddBuddy1">Add Buddy-1</a>
+			<a href="#Dummy" data-role="button" data-action="AddBuddy2">Add Buddy-2</a>
+			<a href="#Dummy" data-role="button" data-action="AddExpense">Add Expense</a>
+			<a href="#Dummy" data-role="button" data-action="EditBuddies">Edit Buddies</a>
+		</div>
+		<!-- /content -->
+		<div data-role="footer" data-position="fixed"></div>
+		<!-- /footer -->
+	</div>
+	<!-- Start of page AddBuddy:-->
+	<div data-role="page" id="AddBuddy" data-theme="b">
+		<div data-role="header">
+			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
+			<h1>Add Buddy</h1>
+		</div>
+		<!-- /header -->
+		<div data-role="content">
+			<form id="AB_AddDetailsForm" method="post">
+				<ul data-role="listview">
+					<li data-role="fieldcontain">
+						<label for="AB_Name"> Buddy Name* </label>
+						<input id="AB_Name" name="AB_Name_r" type="text" />
+					</li>
+					<li data-role="fieldcontain">
+						<label for="AB_Number"> Buddy Telephone </label>
+						<input id="AB_Number" name="AB_Number" type="text" />
+					</li>
+					<li data-role="fieldcontain">
+						<label for="AB_EMail"> Buddy E-Mail </label>
+						<input id="AB_EMail" name="AB_EMail" type="text" />
+					</li>
+					<div id="AB_Msg"></div>
+					<li data-role="fieldcontain">
+						<div data-role="navbar">
+							<ul>
+								<li>
+									<input type="submit" value="Add" data-inline="true" data-theme="b"/>
+								</li>
+								<li>
+									<input type="button" value="Clear" id="AB_Clear" data-inline="true" data-theme="b"/>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</form>
+		</div>
+		<!-- /content -->
+		<div data-role="footer"></div>
+		<!-- /footer -->
+	</div>
+	<!-- /page AddBuddy -->
+	<!-- Start of page AddBuddyPick :-->
+	<div data-role="page" id="AddBuddyPick" data-theme="b">
+		<div data-role="header">
+			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
+			<h1>Add Buddy</h1>
+		</div>
+		<!-- /header -->
+		<div data-role="content">
+			<div>
+				<input type="button" class="buddy_button" value="LoadContacts" data-action="LoadContacts" data-inline="true" data-theme="b"/>
+			</div>
+			<h5 id="ABP_Msg"></h5>
+			<div data-role="fieldcontain">
+				<ul id = "ABP_ContactList" data-role="listview" data-filter="true" data-split-icon="check" data-split-theme="d">
+					<li>
+						<a href="#">Prasanna</a><a class="buddy_select" href="#" >Select</a>
+					</li>
+					<li>
+						<a href="#">Amruta</a><a class="buddy_select" href="#" >Select</a>
+					</li>
+				</ul>
+			</div>
+			<!-- code for navbar
+			<div data-role="navbar">
+			<ul>
+			<li>
+			<input type="button" value="Add" data-action="Add" data-inline="true" data-theme="b"/>
+			</li>
+			<li>
+			<input type="button" value="SelectAll" data-action="SelectAll" data-inline="true" data-theme="b"/>
+			</li>
+			<li>
+			<input type="button" value="Deselect" data-action="Deselect" data-inline="true" data-theme="b"/>
+			</li>
+			</ul>
+			</div>
+			-->
+		</div>
+		<!-- /content -->
+		<div data-role="footer" data-position="fixed" class="ui-bar">
+			<input type="button" class="buddy_button" value="Add" data-action="Add" data-inline="true" data-theme="b"/>
+			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" data-inline="true" data-theme="b"/>
+			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect" data-inline="true" data-theme="b"/>
+		</div>
+		<!-- /footer -->
+	</div>
+	<!-- /page AddBuddyPick -->
+	<!-- Start of page EditBuddies:-->
+	<div data-role="page" id="EditBuddies" data-theme="b">
+		<div data-role="header">
+			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
+			<h1>Edit Buddies</h1>
+		</div>
+		<!-- /header -->
+		<div data-role="content">
+			<h5 id="EB_Msg"></h5>
+			<div data-role="fieldcontain">
+				<form>
+					<ul id = "EB_BuddyList" data-role="listview" data-filter="true"></ul>
+				</form>
+			</div>
+		</div>
+		<!-- /content -->
+		<div data-role="footer" data-position="fixed" class="ui-bar">
+			<input type="button" class="buddy_button" value="Delete" data-action="Delete" />
+			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" />
+			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect"/>
+		</div>
+		<!-- /footer -->
+	</div>
+</body>
+</html> 
