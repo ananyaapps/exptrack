@@ -456,6 +456,7 @@ EditBuddyObj = (function() {
 								//buddies[index].erase(suscessCB, failureCB);
 							}
 						});
+						$buddyList.listview('refresh');
 						
 					}
 					else{

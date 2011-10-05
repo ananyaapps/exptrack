@@ -100,7 +100,8 @@ database = function() {
 
 	Buddy.prototype.getFormattedText = function(format) {
 		var str = '';
-		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense / 100) + '</strong></p></li>';
+		//todo : prasanna : adjust the balance amount display
+		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense / 1000) + '</strong></p></li>';
 		return str;
 	}
 	var dbObject = {
