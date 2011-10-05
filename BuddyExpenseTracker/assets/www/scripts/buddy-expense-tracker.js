@@ -74,6 +74,7 @@ HomeObj = (function() {
 				//Show the page loading message
 				//$.mobile.showPageLoadingMsg();
 				//Populate the contents of the page
+				$.mobile.showPageLoadingMsg();
 				$.mobile.changePage("#EditBuddies");
 				break;
 
