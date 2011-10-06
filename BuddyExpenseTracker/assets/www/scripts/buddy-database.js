@@ -51,11 +51,15 @@ database = function() {
 		failureCB = failureCB || dbObject.defaults.userFailCB;
 		message = 'Saving buddy to the database';
 		//hook the suscess callback to set the id
-		hookSuscessCB = function(tx, resultSet){
+		hookSuscessCB = function(tx, resultSet) {
+			var result = {};
 			that.id = resultSet.insertId;
+			//number of modified items is 1
+			result.cntModified = 1;
+			result.cntFailed = 0;
 			//Call the original suscess CB
-			suscessCB();
-			
+			suscessCB(result);
+
 		};
 		//Save as new entry in the database only if id is -1
 		if(this.id === -1) {
@@ -71,11 +75,15 @@ database = function() {
 		var that = this;
 		var custom_error = {};
 		//hook the suscess callback
-		var hookSuscessFunction = function(){
+		var hookSuscessFunction = function() {
 			//Set the invalid id, so that the delete attempt on this object fails
 			that.id = -1;
+			var result = {};
+			//set the result, number of modified items is 1
+			result.cntModified = 1;
+			result.cntFailed = 0;
 			//Now call the desired callback
-			suscessCB();
+			suscessCB(result);
 		};
 		//if callbacks are not provided, use default callbacks
 		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
@@ -92,7 +100,7 @@ database = function() {
 			db.transaction(function(tx) {
 				var query = 'DELETE FROM ' + BUDDY_TABLE + ' WHERE id = ' + that.id;
 				logger.log('query ' + query);
-				tx.executeSql(query , [], suscessCB);
+				tx.executeSql(query, [], suscessCB);
 			}, failureCB);
 		}
 		//todo : prasanna : delete the entries from expense table also
@@ -128,17 +136,21 @@ database = function() {
 			//Suscess handler for the db query.This function receives the transcation object & results
 			var suscessHandler = function(tx, results) {
 				//cache the rows
+				var result = {};
 				var rows = results.rows;
 				var length = rows.length;
 				var i;
 				//start with an empty array
 				var buddies = [];
+				result.cntModified = length;
+				result.cntFailed = 0;
 				//create buddy objects from he database result
 				for( i = 0; i < length; i++) {
 					buddies.push(new Buddy(rows.item(i)));
 				}
+				result.buddies = buddies;
 				//Call the user callback with the result set
-				suscessCB(buddies);
+				suscessCB(result);
 			};
 			db.transaction(function(tx) {
 				tx.executeSql(query, [], suscessHandler);

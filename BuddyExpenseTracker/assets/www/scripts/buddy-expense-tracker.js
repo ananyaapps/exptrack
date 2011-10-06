@@ -74,8 +74,8 @@ HomeObj = (function() {
 				//Show the page loading message
 				//$.mobile.showPageLoadingMsg();
 				//Populate the contents of the page
-				$.mobile.showPageLoadingMsg();
 				$.mobile.changePage("#EditBuddies");
+				//$.mobile.showPageLoadingMsg();
 				break;
 
 			default:
@@ -392,6 +392,7 @@ AddBuddyPickObj = (function() {
 	return retObj;
 
 })();
+
 EditBuddyObj = (function() {
 	//Reference to current page
 	var $page;
@@ -504,7 +505,8 @@ EditBuddyObj = (function() {
 		//Function to populate the list with buddies, this should be called after the page is shown
 		pageshow : function() {
 			//If the query is suscessful, then array of buddy objects will be returned
-			var buddySuscess = function(buddies) {
+			var buddySuscess = function(result) {
+				var buddies = result.buddies;
 				var len = buddies.length;
 				var str = '';
 				var i;
