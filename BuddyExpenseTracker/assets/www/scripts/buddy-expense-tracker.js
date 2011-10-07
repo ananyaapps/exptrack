@@ -427,7 +427,7 @@ EditBuddyObj = (function() {
 	};
 
 	//function to handle the button clicks and actions on the page
-	function buttonHandler() {
+	function buttonHandler(event) {
 		var value = $(this).attr('data-action');
 		switch(value) {
 			case 'Delete':
@@ -481,10 +481,7 @@ EditBuddyObj = (function() {
 				break;
 
 		}
-
-		//prevent defaults
 		return false;
-
 	};
 
 	retObj = {

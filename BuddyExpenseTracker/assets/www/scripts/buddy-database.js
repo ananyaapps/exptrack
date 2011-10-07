@@ -156,6 +156,48 @@ database = function() {
 				tx.executeSql(query, [], suscessHandler);
 			}, failureCB);
 		},
+		//Function to batch operation
+		//params:
+		//@@objArray : Array of objects, on which the operations needs to be done either array of buddy or expense
+		//@@operation : possible operations -> erase,save
+		batchOperation : function(objArray, operation, dbCbk) {
+			var objCount = objArray.length;
+			//number of times the callback called , so far
+			var cbkCount = 0;
+			//result
+			var result = {};
+			var index = 0;
+			result.cntModified = 0;
+			result.cntFailed = 0;
+			var hookSuscessCB = function() {
+				result.cntModified++;
+				cbkCount++;
+				//Batch operation complete, invoke the user function
+				if(cbkCount === objCount) {
+					dbCbk(result);
+				}
+			};
+			var hookFailueCB = function(err) {
+				result.cntFailed++;
+				cbkCount++;
+				//Batch operation complete, invoke the user function
+				if(cbkCount === objCount) {
+					dbCbk(result);
+				}
+			};
+			//batch operation over the collection
+			for( index = 0; index < objCount; index++) {
+				if(operation === 'erase') {
+					objArray[index].erase(hookSuscessCB,hookFailueCB);
+				} else if(operation === 'save') {
+					objArray[index].save(hookSuscessCB,hookFailueCB);
+				}
+				else{
+					
+				}
+			}
+
+		},
 		//The default options, user can change them
 		defaults : {
 			//The callback functions which are called for user initiated database operations
