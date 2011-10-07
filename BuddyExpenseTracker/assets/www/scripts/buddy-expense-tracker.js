@@ -177,16 +177,19 @@ AddBuddyObj = (function() {
 			inputMapVar = $form.find('input[name*="_r"]');
 
 			//Handler for Clear button
-			$form.find('#AB_Clear').bind('click', function() {
+			page.find('#AB_Clear').bind('click', function() {
 				//Clear the form input elements
 				$form.clearForm();
 				//Clear the label format
 				$form.clearForm.clearLabels(inputMapVar);
 				//Clear the message area
 				$msgBox.html('');
+				//prevent defaults
+				return false;
 			});
 			//Attach the form processing function
-			$form.submit(FormHandler);
+			page.find('#AB_submit').bind('click',FormHandler);
+//			$form.submit(FormHandler);
 
 		},
 		//function called before hiding the page, do some clean-up
