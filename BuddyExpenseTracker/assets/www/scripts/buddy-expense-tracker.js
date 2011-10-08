@@ -163,6 +163,32 @@ AddBuddyObj = (function() {
 		});
 	};
 
+	//button click handler
+	function buttonHandler() {
+		var value = $(this).attr('data-action');
+		switch(value) {
+			case 'Add':
+				//Process the form
+				FormHandler();
+				break;
+
+			case 'Clear':
+				//Clear the form input elements
+				$form.clearForm();
+				//Clear the label format
+				$form.clearForm.clearLabels(inputMapVar);
+				//Clear the message area
+				$msgBox.html('');
+				break;
+
+			default:
+				break;
+		}
+		//prevent defaults
+		return false;
+
+	};
+
 	var retObj = {
 		//init function for the page.This should be passed the jQuery page object
 		init : function(page) {
@@ -176,20 +202,8 @@ AddBuddyObj = (function() {
 			//Initialise all the form elements, that can not be empty
 			inputMapVar = $form.find('input[name*="_r"]');
 
-			//Handler for Clear button
-			page.find('#AB_Clear').bind('click', function() {
-				//Clear the form input elements
-				$form.clearForm();
-				//Clear the label format
-				$form.clearForm.clearLabels(inputMapVar);
-				//Clear the message area
-				$msgBox.html('');
-				//prevent defaults
-				return false;
-			});
-			//Attach the form processing function
-			page.find('#AB_submit').bind('click',FormHandler);
-//			$form.submit(FormHandler);
+			//Handle button clicks
+			page.delegate('.buddy_button', 'click', buttonHandler);
 
 		},
 		//function called before hiding the page, do some clean-up
@@ -395,7 +409,6 @@ AddBuddyPickObj = (function() {
 	return retObj;
 
 })();
-
 EditBuddyObj = (function() {
 	//Reference to current page
 	var $page;
@@ -462,14 +475,13 @@ EditBuddyObj = (function() {
 							}
 						});
 						$buddyList.listview('refresh');
-						
-					}
-					else{
+
+					} else {
 						$msgBox.setStatus();
 					}
 				}
 				//Reset this before leaving
-				noContacts = 0; 
+				noContacts = 0;
 				break;
 
 			case 'SelectAll':
@@ -514,9 +526,9 @@ EditBuddyObj = (function() {
 					str += buddies[i].getFormattedText('EditBuddies');
 				}
 				$buddyList.html(str).listview('refresh');
-				$buddySelList = $buddyList.find('.buddy_select').each(function(index){
+				$buddySelList = $buddyList.find('.buddy_select').each(function(index) {
 					//Store the associated buddy object in DOM
-					$(this).data('this_buddy',buddies[index]);
+					$(this).data('this_buddy', buddies[index]);
 				});
 				$buddySelList.button();
 				$message = "Found " + buddies.length + " Buddies";
