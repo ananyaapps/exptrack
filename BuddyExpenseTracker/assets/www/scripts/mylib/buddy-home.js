@@ -1,10 +1,11 @@
 /*global jQuery*/
 /*properties
-    $page, HomeObj, attr, changePage, delegate, find, init, mobile
+$page, HomeObj, attr, changePage, delegate, find, init, mobile
 */
 //Global variables
 //HomeObj handles the activities for the homescreen
-var buddyExpTrack = ( function(module,$) {
+var buddyExpTrack = ( function(module, $) {
+	var controller;
 	//Function to handle clicks in the dashboard
 	function DashBoardHandler(event) {
 		var $this = $(this), action = $this.attr('data-action');
@@ -13,11 +14,11 @@ var buddyExpTrack = ( function(module,$) {
 				break;
 
 			case 'AddBuddy1':
-				$.mobile.changePage("#AddBuddy");
+				controller.navigate("#AddBuddy");
 				break;
 
 			case 'AddBuddy2':
-				$.mobile.changePage("#AddBuddyPick");
+				controller.navigate("#AddBuddyPick");
 				break;
 
 			case 'AddExpense':
@@ -27,7 +28,7 @@ var buddyExpTrack = ( function(module,$) {
 				//Show the page loading message
 				//$.mobile.showPageLoadingMsg();
 				//Populate the contents of the page
-				$.mobile.changePage("#EditBuddies");
+				controller.navigate("#EditBuddies");
 				//$.mobile.showPageLoadingMsg();
 				break;
 
@@ -40,14 +41,16 @@ var buddyExpTrack = ( function(module,$) {
 	var retObj = {
 		//HomePage object must be pased to the init function
 		init : function(page) {
+			//Initialise closures
+			controller = module.buddyController;
 			//Update member variable, store the page
 			this.$page = page;
 			page.find('#HomeScreenButtons').delegate('a', 'click', DashBoardHandler);
 
 		}
 	};
-	
+
 	module.HomeObj = retObj;
 	return module;
 
-}((buddyExpTrack || {}),jQuery));
+}((buddyExpTrack || {}), jQuery));
