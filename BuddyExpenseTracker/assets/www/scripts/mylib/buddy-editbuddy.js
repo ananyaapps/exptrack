@@ -1,12 +1,13 @@
-/*global window,jQuery,buddy_db*/
+/*global window,jQuery*/
 /*properties
-$page, attr, buddies, button, confirm, data, delegate, each, erase, find,
-findBuddies, getFormattedText, html, init, listview, message, pagehide,
-pageshow, parent, remove, setSelectedState, setStatus, status
+    $page, EditBuddyObj, attr, buddies, buddy_db, button, confirm, data, 
+    delegate, each, erase, find, findBuddies, getFormattedText, html, init, 
+    listview, message, pagehide, pageshow, parent, remove, setSelectedState, 
+    setStatus, status
 */
 
 //Edit buddies screen object
-var EditBuddyObj = ( function($, database) {
+var  buddyExpTrack = ( function(module,$) {
 	//Reference to current page
 	var $page,
 	//List that holds the buddies
@@ -20,7 +21,7 @@ var EditBuddyObj = ( function($, database) {
 	//number of contacts selected
 	noContacts = 0,
 	//cache the confirm function
-	confirm = window.confirm,
+	confirm = window.confirm,database,
 	//Start with an empty object to return
 	retObj = {};
 
@@ -102,6 +103,7 @@ var EditBuddyObj = ( function($, database) {
 
 	retObj = {
 		init : function(page) {
+			database = module.buddy_db;
 			//update the local variable
 			$page = page;
 
@@ -146,7 +148,7 @@ var EditBuddyObj = ( function($, database) {
 
 		}
 	};
+	module.EditBuddyObj = retObj;
+	return module;
 
-	return retObj;
-
-}(jQuery, buddy_db));
+}((buddyExpTrack || {}),jQuery));

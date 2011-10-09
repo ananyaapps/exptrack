@@ -1,9 +1,16 @@
-//Global variables
-var buddyController = ( function() {
+//Controller sub-module
+var buddyExpTrack = ( function(module, $) {
 	//Start with an empty
-	var retObj = {};
+	var retObj = {}, AddBuddyObj, HomeObj, EditBuddyObj, AddBuddyPickObj, buddy_db;
 
 	retObj.init = function() {
+		//initialise closure variables
+		AddBuddyObj = module.AddBuddyObj;
+		HomeObj = module.HomeObj;
+		EditBuddyObj = module.EditBuddyObj;
+		AddBuddyPickObj = module.AddBuddyPickObj;
+		buddy_db = module.buddy_db;
+		
 		/*
 		 $('body').live('pageshow',function(event,ui){
 		 logger.log('pageshow ');
@@ -40,22 +47,23 @@ var buddyController = ( function() {
 
 	retObj.navigate = function(to, options) {
 		var returnObj;
-		if (typeof to === 'string'){
+		if( typeof to === 'string') {
 			returnObj = $.mobile.path.parseUrl(to);
 			logger.log(returnObj);
 		}
-		logger.log(typeof to);
+		logger.log( typeof to);
 		$.mobile.changePage(to, options);
 
 	};
-	return retObj;
-}());
+	module.buddyController = retObj;
+	return module;
+}((buddyExpTrack || {}), jQuery));
 
 //$(document).bind("mobileinit", Initialise);
 
 $(document).ready(function() {
-	buddyController.init();
-	if( typeof (PhoneGap) != 'undefined') {
+	buddyExpTrack.buddyController.init();
+	if( typeof (PhoneGap) !== 'undefined') {
 		$('body > *').css({
 			minHeight : '100% !important',
 			minWidth : '100% !important'

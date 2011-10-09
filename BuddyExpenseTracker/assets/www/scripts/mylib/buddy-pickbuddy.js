@@ -1,14 +1,14 @@
-/*global window,jQuery,buddy_db*/
+/*global window,jQuery*/
 /*properties
-    $page, attr, contacts, createBuddy, data, delegate, displayName, each, 
-    find, getDBObject, getFormattedText, html, init, listview, message, 
-    multiple, navigator, pagehide, save, setSelectedState, setStatus, status, 
-    val
+    $page, AddBuddyPickObj, attr, buddy_db, contacts, createBuddy, data, 
+    delegate, displayName, each, find, getDBObject, getFormattedText, html, 
+    init, listview, message, multiple, navigator, pagehide, save, 
+    setSelectedState, setStatus, status, val
 */
 
 //Global variables
 //Object for AddBuddy screen by picking from the contacts
-var AddBuddyPickObj = (function($, database) {
+var buddyExpTrack = (function(module,$) {
 
 	//This page
 	var $page,
@@ -22,7 +22,7 @@ var AddBuddyPickObj = (function($, database) {
 	message,
 	//Displayed list of contacts
 	dispContacts = [],
-	retObj = {},
+	retObj = {},database,
 	navigator = window.navigator;
 
 	//Callback function , if the database is suscessfully updated (from pickcontact section)
@@ -159,6 +159,7 @@ var AddBuddyPickObj = (function($, database) {
 		//init function for the page.This should be passed the jQuery page object
 		init : function(page) {
 
+			database = module.buddy_db;
 			//Store the page in the local variable
 			$page = page;
 			this.$page = page;
@@ -186,7 +187,8 @@ var AddBuddyPickObj = (function($, database) {
 
 		}
 	};
+	module.AddBuddyPickObj = retObj;
 
-	return retObj;
+	return module;
 
-}(jQuery, buddy_db));
+}((buddyExpTrack || {}),jQuery));

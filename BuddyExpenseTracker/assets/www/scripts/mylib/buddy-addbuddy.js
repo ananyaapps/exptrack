@@ -1,17 +1,17 @@
-/*global window,jQuery,buddy_db*/
+/*global window,jQuery*/
 /*properties
-    $page, addClass, attr, clearForm, clearLabels, createBuddy, delegate, each, 
-    email, find, html, init, message, name, number, pagehide, prev, save, 
-    serializeArray, setStatus, status, val, value
+    $page, AddBuddyObj, addClass, attr, buddy_db, clearForm, clearLabels, 
+    createBuddy, delegate, each, email, find, html, init, message, name, 
+    number, pagehide, prev, save, serializeArray, setStatus, status, val, value
 */
 //Global variables
 
 //Add Buddy screen object
 //AddBuddy object handles the activities for Add Buddy screen
-var AddBuddyObj = (function($, database) {
+var buddyExpTrack = (function(module,$) {
 
 	//List of form elements to be validated for emptiness
-	var inputMapVar, $form, $page,
+	var inputMapVar, $form, $page,database,
 	//Message for the user..holds the current operation in progress
 	message, $msgBox, retObj = {};
 
@@ -97,7 +97,7 @@ var AddBuddyObj = (function($, database) {
 	retObj = {
 		//init function for the page.This should be passed the jQuery page object
 		init : function(page) {
-
+			database = module.buddy_db;
 			//Store the page in the local variable
 			$page = page;
 			this.$page = page;
@@ -121,7 +121,7 @@ var AddBuddyObj = (function($, database) {
 			$msgBox.html('');
 		}
 	};
+	module.AddBuddyObj = retObj;
+	return module;
 
-	return retObj;
-
-}(jQuery, buddy_db));
+}((buddyExpTrack || {}),jQuery));

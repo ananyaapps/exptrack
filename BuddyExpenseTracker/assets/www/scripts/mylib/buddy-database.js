@@ -1,13 +1,13 @@
-/*global jQuery,buddy_db,window*/
+/*global jQuery,window*/
 /*properties
-    append, batchOperation, buddies, cntFailed, cntModified, code, console, 
-    createBuddy, defaults, email, erase, executeSql, extend, findBuddies, 
-    getFormattedText, id, init, insertId, item, log, message, name, number, 
-    openDatabase, rows, save, total_expense, transaction, userFailCB, 
-    userSuscessCB
+    append, batchOperation, buddies, buddy_db, cntFailed, cntModified, code, 
+    console, createBuddy, defaults, email, erase, executeSql, extend, 
+    findBuddies, getFormattedText, id, init, insertId, item, log, message, 
+    name, number, openDatabase, rows, save, total_expense, transaction, 
+    userFailCB, userSuscessCB
 */
 var logger;
-var buddy_db = ( function($) {
+var buddyExpTrack = ( function(module,$) {
 	//The constants (So called !!)
 	var NAME = 'BuddyExpendeDb', VERSION = '1.0', SIZE = 1000000, BUDDY_TABLE = 'BuddyTb', BUDDYEXPENSE_TABLE = 'BuddyExpenseTb',
 
@@ -214,10 +214,11 @@ var buddy_db = ( function($) {
 			userFailCB : defaultErrorCB
 		}
 	};
+	module.buddy_db = dbObject; 
+	return module;
 
-	return dbObject;
+}((buddyExpTrack || {}),jQuery));
 
-}(jQuery));
 logger = ( function($) {
 	var retObj;
 	retObj = {
