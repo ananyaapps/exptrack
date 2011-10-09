@@ -1,0 +1,10 @@
+/.settings
+/default.properties
+/proguard.cfg
+/AndroidManifest.xml
+/src
+/gen
+/res
+/libs
+.classpath
+.project
