@@ -1,3 +1,4 @@
+/*global jQuery,window*/
 /**
  * @author prasanna
  */
@@ -6,7 +7,7 @@
 //
 //create closure. Create JQuery plugin for text resize
 //
-(function($) {
+( function($) {
 	//
 	// plugin definition
 	//
@@ -14,11 +15,8 @@
 		var opts = $.extend({}, $.fn.textResize.defaults, options);
 		// iterate and reformat each matched element
 		return this.each(function() {
-			var $this = $(this);
-			var currFontSize = $this.css('fontSize');
-			var finalNum = parseFloat(currFontSize, 10);
-			var stringEnding = currFontSize.slice(-2);
-			if(opts.direction == '+') {
+			var $this = $(this), currFontSize = $this.css('fontSize'), finalNum = parseFloat(currFontSize, 10), stringEnding = currFontSize.slice(-2);
+			if(opts.direction === '+') {
 				finalNum *= opts.scale;
 			} else {
 				finalNum /= opts.scale;
@@ -36,7 +34,7 @@
 	//
 	//end of closure
 	//
-})(jQuery);
+}(jQuery));
 
 //
 //create closure. Create JQuery plugin for clearing form
@@ -58,7 +56,7 @@
 	// plugin definition
 	//
 	$.fn.clearForm = function(options) {
-		var opts = $.extend({}, defaults, options);
+		var opts = $.extend({}, defaults, options), length, i;
 		//Check if the form elements need to be cleared
 		if(opts.form === true) {
 			// iterate over each input element and clear the value
@@ -68,8 +66,8 @@
 		}
 		//Check if the non-form elements need to be cleared
 		if(opts.non_form === true) {
-			var length = opts.classes.length;
-			for(var i = 0; i < length; i++) {
+			length = opts.classes.length;
+			for( i = 0; i < length; i = i + 1) {
 				this.find(opts.classes[i]).html('');
 			}
 		}
@@ -79,8 +77,8 @@
 	//Public function to clear the labels from any formatting
 	$.fn.clearForm.clearLabels = function(labels) {
 		//Clear all the labels
-		if(labels == undefined) {
-			logger.log('$.fn.clearForm.clearLabels() called with no arguments');
+		if(labels === undefined) {
+			window.logger.log('$.fn.clearForm.clearLabels() called with no arguments');
 		} else {
 			labels.each(function(index) {
 				$(this).prev().removeClass("missing");
@@ -91,7 +89,7 @@
 	// Allow the plugin defaults to be modified outside
 	//
 	$.fn.clearForm.defaults = defaults;
-})(jQuery);
+}(jQuery));
 
 //
 //create closure. Create JQuery plugin for showing status smessages
@@ -142,7 +140,7 @@
 	//
 	//end of closure
 	//
-})(jQuery);
+}(jQuery));
 
 //
 //create closure. Create JQuery plugin for setting selected status on list elements
@@ -155,10 +153,10 @@
 	$.fn.setSelectedState = function(status) {
 		// iterate and reformat each matched element
 		return this.each(function() {
-			var $this = $(this);
-			var tagName = $this.prop('tagName').toLowerCase();
+			var $this = $(this),
+			tagName = $this.prop('tagName').toLowerCase(),
 			//un select the contact by default
-			var sel_status;
+			sel_status;
 			//No parameter, default action
 			if(status === undefined) {
 				sel_status = $this.data('sel-status') || false;
@@ -214,7 +212,7 @@
 	//
 	//end of closure
 	//
-})(jQuery);
+}(jQuery));
 ///////////////////// JQUERY PLUGINS : END ////////////////////////////////////
 
 ///////////////////// PHONEGAP extensions : START ////////////////////////
@@ -224,13 +222,13 @@
  * @param errorCB error callback
  */
 
-Contact.prototype.getFormattedText = function() {
+window.Contact.prototype.getFormattedText = function() {
 	var str = '<li><a href="#">';
 	str += this.displayName + '</a><a class="buddy_select" href="#" >Select</a></li>';
 	return str;
 };
 
-Contact.prototype.getDBObject = function() {
+window.Contact.prototype.getDBObject = function() {
 	var buddy = {};
 	buddy.name = this.displayName;
 	//check if the contact has phone number set

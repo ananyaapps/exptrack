@@ -1,17 +1,28 @@
+/*global window,jQuery,buddy_db*/
+/*properties
+    $page, attr, buddies, button, confirm, data, delegate, each, erase, find, 
+    findBuddies, getFormattedText, html, init, listview, message, pagehide, 
+    pageshow, parent, remove, setSelectedState, setStatus, status
+*/
+
 //Edit buddies screen object
-var EditBuddyObj = (function($,database) {
+var EditBuddyObj = (function($, database) {
 	//Reference to current page
-	var $page;
+	var $page,
 	//List that holds the buddies
-	var $buddyList;
+	$buddyList,
 	//List that holds the selection field , ie the check icon
-	var $buddySelList;
+	$buddySelList,
 	//Div for displaying messages
-	var $msgBox;
+	$msgBox,
 	//message to display
-	var $message;
+	$message,
 	//number of contacts selected
-	var noContacts = 0;
+	noContacts = 0,
+	//cache the confirm function
+	confirm = window.confirm,
+	//Start with an empty object to return
+	retObj = {};
 
 	//Default fail CB for database queries
 	function failureCB(error) {
@@ -19,18 +30,18 @@ var EditBuddyObj = (function($,database) {
 			status : 'error'
 		});
 
-	};
+	}
 
 	//Callback function , if the database is suscessfully updated
 	function suscessCB() {
 		$msgBox.html($message + ' suscessful').setStatus();
-	};
+	}
 
 	//Function to handle the click on the checkbox
 	function selectBuddy() {
 		$(this).setSelectedState();
 		//$buddyList.listview('refresh');
-	};
+	}
 
 	//function to handle the button clicks and actions on the page
 	function buttonHandler(event) {
@@ -40,7 +51,7 @@ var EditBuddyObj = (function($,database) {
 				//prasanna : some optimisations can be done here
 				$buddySelList.each(function() {
 					if($(this).data('sel-status') === true) {
-						noContacts++;
+						noContacts = noContacts + 1;
 					}
 				});
 				//Atleast one contact needs to be selected
@@ -87,7 +98,7 @@ var EditBuddyObj = (function($,database) {
 
 		}
 		return false;
-	};
+	}
 
 	retObj = {
 		init : function(page) {
@@ -108,11 +119,8 @@ var EditBuddyObj = (function($,database) {
 		pageshow : function() {
 			//If the query is suscessful, then array of buddy objects will be returned
 			var buddySuscess = function(result) {
-				var buddies = result.buddies;
-				var len = buddies.length;
-				var str = '';
-				var i;
-				for( i = 0; i < len; i++) {
+				var buddies = result.buddies, len = buddies.length, str = '', i;
+				for( i = 0; i < len; i = i + 1) {
 					str += buddies[i].getFormattedText('EditBuddies');
 				}
 				$buddyList.html(str).listview('refresh');
@@ -140,4 +148,4 @@ var EditBuddyObj = (function($,database) {
 
 	return retObj;
 
-})(jQuery,buddy_db);
+}(jQuery, buddy_db));

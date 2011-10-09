@@ -1,11 +1,15 @@
+/*global jQuery*/
+/*properties
+    $page, attr, changePage, delegate, find, init, mobile
+*/
 //Global variables
 
 //HomeObj handles the activities for the homescreen
 var HomeObj = (function($) {
 	//Function to handle clicks in the dashboard
 	function DashBoardHandler(event) {
-		$this = $(this);
-		var action = $this.attr('data-action');
+		var $this = $(this),
+		action = $this.attr('data-action');
 		switch(action) {
 			case 'ListExpense':
 				break;
@@ -33,7 +37,7 @@ var HomeObj = (function($) {
 				break;
 		}
 		return false;
-	};
+	}
 
 	var retObj = {
 		//HomePage object must be pased to the init function
@@ -47,4 +51,4 @@ var HomeObj = (function($) {
 
 	return retObj;
 
-})(jQuery);
+}(jQuery));

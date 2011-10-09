@@ -1,22 +1,36 @@
+/*global window,jQuery,buddy_db*/
+/*properties
+    $page, addClass, attr, clearForm, clearLabels, createBuddy, delegate, each, 
+    email, find, html, init, message, name, number, pagehide, prev, save, 
+    serializeArray, setStatus, status, val, value
+*/
 //Global variables
 
 //Add Buddy screen object
 //AddBuddy object handles the activities for Add Buddy screen
-var AddBuddyObj = (function($,database) {
+var AddBuddyObj = (function($, database) {
 
 	//List of form elements to be validated for emptiness
-	var inputMapVar;
-	var $form;
-	var $page;
+	var inputMapVar, $form, $page,
 	//Message for the user..holds the current operation in progress
-	var message;
-	var $msgBox;
+	message, $msgBox, retObj = {};
+
+	//Callback function , if the database is suscessfully updated
+	function suscessCB() {
+		$msgBox.html(message + 'suscessful').setStatus();
+	}
+
+	//Callback function, if there is an error
+	function failureCB(error) {
+		$msgBox.html(message + 'failed ' + error.message).setStatus({
+			status : 'error'
+		});
+	}
 
 	//Function that manages the submission of AddBuddy form
-	function FormHandler() {
+	function formHandler() {
 
-		var err = '';
-		var values;
+		var err = '', values;
 		//Clear the label format (the red error message etc.)
 		$form.clearForm.clearLabels(inputMapVar);
 		//Dont clear the form , but clear the form messages
@@ -24,7 +38,7 @@ var AddBuddyObj = (function($,database) {
 
 		// Perform form validation for empty strings
 		inputMapVar.each(function(index) {
-			if($(this).val() == null || $.trim($(this).val()).length == 0) {
+			if($(this).val() === null || $.trim($(this).val()).length === 0) {
 				$(this).prev().addClass("missing");
 				err = 'Please enter the mandatory fields';
 			}
@@ -52,19 +66,7 @@ var AddBuddyObj = (function($,database) {
 		//prevent default behaviour
 		return false;
 
-	};
-
-	//Callback function , if the database is suscessfully updated
-	function suscessCB() {
-		$msgBox.html(message + 'suscessful').setStatus();
-	};
-
-	//Callback function, if there is an error
-	function failureCB(error) {
-		$msgBox.html(message + 'failed ' + error.message).setStatus({
-			status : 'error'
-		});
-	};
+	}
 
 	//button click handler
 	function buttonHandler() {
@@ -72,7 +74,7 @@ var AddBuddyObj = (function($,database) {
 		switch(value) {
 			case 'Add':
 				//Process the form
-				FormHandler();
+				formHandler();
 				break;
 
 			case 'Clear':
@@ -90,9 +92,9 @@ var AddBuddyObj = (function($,database) {
 		//prevent defaults
 		return false;
 
-	};
+	}
 
-	var retObj = {
+	retObj = {
 		//init function for the page.This should be passed the jQuery page object
 		init : function(page) {
 
@@ -122,4 +124,4 @@ var AddBuddyObj = (function($,database) {
 
 	return retObj;
 
-})(jQuery,buddy_db);
+}(jQuery, buddy_db));

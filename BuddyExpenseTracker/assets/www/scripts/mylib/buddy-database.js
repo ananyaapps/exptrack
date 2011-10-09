@@ -1,26 +1,35 @@
-buddy_db = function() {
+/*global jQuery,buddy_db,window*/
+/*properties
+    append, batchOperation, buddies, cntFailed, cntModified, code, console, 
+    createBuddy, defaults, email, erase, executeSql, extend, findBuddies, 
+    getFormattedText, id, init, insertId, item, log, message, name, number, 
+    openDatabase, rows, save, total_expense, transaction, userFailCB, 
+    userSuscessCB
+*/
+var logger;
+var buddy_db = ( function($) {
 	//The constants (So called !!)
-	var NAME = 'BuddyExpendeDb';
-	var VERSION = '1.0';
-	var SIZE = 1000000;
-	var BUDDY_TABLE = 'BuddyTb';
-	var BUDDYEXPENSE_TABLE = 'BuddyExpenseTb';
+	var NAME = 'BuddyExpendeDb', VERSION = '1.0', SIZE = 1000000, BUDDY_TABLE = 'BuddyTb', BUDDYEXPENSE_TABLE = 'BuddyExpenseTb',
 
 	//Reference to database object
-	var db;
+	db,
 	//current operation for logging
-	var message;
+	message,
 	//current database query to be executed
-	var query;
+	query,
+	//start with an empty db object
+	dbObject = {};
 
-	var defaultSuscessCB = function() {
+	function defaultSuscessCB() {
 		logger.log('Suscess : ' + message);
-	};
-	var defaultErrorCB = function(err) {
+	}
+
+	function defaultErrorCB(err) {
 		logger.log('Fail : ' + message + 'error message : ' + err.message + ' error code : ' + err.code);
 
-	};
-	var createTables = function(tx) {
+	}
+
+	function createTables(tx) {
 		var query = 'CREATE TABLE IF NOT EXISTS ' + BUDDY_TABLE + '(id INTEGER NOT NULL PRIMARY KEY ASC AUTOINCREMENT,' + 'name STRING NOT NULL UNIQUE,' + 'number TEXT,' + 'total_expense INTEGER NOT NULL,' + 'def_currency TEXT ,' + 'email TEXT)';
 		//message for logger functionality
 		message = 'Creating table BuddyExpenseTb';
@@ -29,9 +38,10 @@ buddy_db = function() {
 		//message for logger functionality
 		message = 'Creating table BuddyExpenseTb';
 		tx.executeSql(query);
-	};
+	}
+
 	//buddy class
-	var Buddy = function(values) {
+	function Buddy(values) {
 		//If name is not defined, return null object
 		if(values.name === undefined) {
 			return null;
@@ -41,7 +51,8 @@ buddy_db = function() {
 		this.number = values.number;
 		this.email = values.email;
 		this.total_expense = 0;
-	};
+	}
+
 
 	Buddy.prototype.save = function(suscessCB, failureCB) {
 		//cache the object
@@ -51,7 +62,7 @@ buddy_db = function() {
 		failureCB = failureCB || dbObject.defaults.userFailCB;
 		message = 'Saving buddy to the database';
 		//hook the suscess callback to set the id
-		hookSuscessCB = function(tx, resultSet) {
+		function hookSuscessCB(tx, resultSet) {
 			var result = {};
 			that.id = resultSet.insertId;
 			//number of modified items is 1
@@ -60,7 +71,8 @@ buddy_db = function() {
 			//Call the original suscess CB
 			suscessCB(result);
 
-		};
+		}
+
 		//Save as new entry in the database only if id is -1
 		if(this.id === -1) {
 			db.transaction(function(tx) {
@@ -72,10 +84,9 @@ buddy_db = function() {
 	//Function to erase buddy from the database
 	Buddy.prototype.erase = function(suscessCB, failureCB) {
 		//cache the object
-		var that = this;
-		var custom_error = {};
+		var that = this, custom_error = {};
 		//hook the suscess callback
-		var hookSuscessFunction = function() {
+		function hookSuscessFunction() {
 			//Set the invalid id, so that the delete attempt on this object fails
 			that.id = -1;
 			var result = {};
@@ -84,7 +95,8 @@ buddy_db = function() {
 			result.cntFailed = 0;
 			//Now call the desired callback
 			suscessCB(result);
-		};
+		}
+
 		//if callbacks are not provided, use default callbacks
 		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
 		failureCB = failureCB || dbObject.defaults.userFailCB;
@@ -109,10 +121,10 @@ buddy_db = function() {
 	Buddy.prototype.getFormattedText = function(format) {
 		var str = '';
 		//todo : prasanna : adjust the balance amount display
-		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense / 1000) + '</strong></p></li>';
+		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense) + '</strong></p></li>';
 		return str;
-	}
-	var dbObject = {
+	};
+	dbObject = {
 		init : function() {
 			db = window.openDatabase(NAME, VERSION, NAME, SIZE);
 			db.transaction(createTables, defaultErrorCB, defaultSuscessCB);
@@ -134,24 +146,23 @@ buddy_db = function() {
 			buddyFields.push('id');
 			var query = 'SELECT ' + buddyFields.join(', ') + ' FROM ' + BUDDY_TABLE;
 			//Suscess handler for the db query.This function receives the transcation object & results
-			var suscessHandler = function(tx, results) {
+			function suscessHandler(tx, results) {
 				//cache the rows
-				var result = {};
-				var rows = results.rows;
-				var length = rows.length;
-				var i;
+				var result = {}, rows = results.rows, length = rows.length, i,
 				//start with an empty array
-				var buddies = [];
+				buddies = [];
 				result.cntModified = length;
 				result.cntFailed = 0;
 				//create buddy objects from he database result
-				for( i = 0; i < length; i++) {
+				for( i = 0; i < length; i = i + 1) {
 					buddies.push(new Buddy(rows.item(i)));
 				}
 				result.buddies = buddies;
 				//Call the user callback with the result set
 				suscessCB(result);
-			};
+			}
+
+
 			db.transaction(function(tx) {
 				tx.executeSql(query, [], suscessHandler);
 			}, failureCB);
@@ -161,39 +172,37 @@ buddy_db = function() {
 		//@@objArray : Array of objects, on which the operations needs to be done either array of buddy or expense
 		//@@operation : possible operations -> erase,save
 		batchOperation : function(objArray, operation, dbCbk) {
-			var objCount = objArray.length;
+			var objCount = objArray.length,
 			//number of times the callback called , so far
-			var cbkCount = 0;
+			cbkCount = 0,
 			//result
-			var result = {};
-			var index = 0;
+			result = {}, index = 0;
 			result.cntModified = 0;
 			result.cntFailed = 0;
-			var hookSuscessCB = function() {
-				result.cntModified++;
-				cbkCount++;
+			function hookSuscessCB() {
+				result.cntModified = result.cntModified + 1;
+				cbkCount = cbkCount + 1;
 				//Batch operation complete, invoke the user function
 				if(cbkCount === objCount) {
 					dbCbk(result);
 				}
-			};
-			var hookFailueCB = function(err) {
-				result.cntFailed++;
-				cbkCount++;
+			}
+
+			function hookFailueCB(err) {
+				result.cntFailed = result.cntFailed + 1;
+				cbkCount = cbkCount + 1;
 				//Batch operation complete, invoke the user function
 				if(cbkCount === objCount) {
 					dbCbk(result);
 				}
-			};
+			}
+
 			//batch operation over the collection
-			for( index = 0; index < objCount; index++) {
+			for( index = 0; index < objCount; index = index + 1) {
 				if(operation === 'erase') {
-					objArray[index].erase(hookSuscessCB,hookFailueCB);
+					objArray[index].erase(hookSuscessCB, hookFailueCB);
 				} else if(operation === 'save') {
-					objArray[index].save(hookSuscessCB,hookFailueCB);
-				}
-				else{
-					
+					objArray[index].save(hookSuscessCB, hookFailueCB);
 				}
 			}
 
@@ -208,21 +217,24 @@ buddy_db = function() {
 
 	return dbObject;
 
-}();
-logger = {
-	log : function(msg) {
-		var message = '';
-		var key;
-		console.log(msg);
-		if( typeof msg === 'object') {
-			for(key in msg) {
-				if(msg.hasOwnProperty(key)) {
-					message = message + '    ' + key + " : " + msg[key];
+}(jQuery));
+logger = ( function($) {
+	var retObj;
+	retObj = {
+		log : function(msg) {
+			var message = '', key;
+			window.console.log(msg);
+			if( typeof msg === 'object') {
+				for(key in msg) {
+					if(msg.hasOwnProperty(key)) {
+						message = message + '    ' + key + " : " + msg[key];
+					}
 				}
+			} else {
+				message = '    ' + msg;
 			}
-		} else {
-			message = '    ' + msg;
+			$('#DebugMessage').append(message);
 		}
-		$('#DebugMessage').append(message);
-	}
-};
+	};
+	return retObj;
+}(jQuery));
