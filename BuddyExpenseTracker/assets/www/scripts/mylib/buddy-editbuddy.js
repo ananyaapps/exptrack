@@ -1,12 +1,12 @@
 /*global window,jQuery,buddy_db*/
 /*properties
-    $page, attr, buddies, button, confirm, data, delegate, each, erase, find, 
-    findBuddies, getFormattedText, html, init, listview, message, pagehide, 
-    pageshow, parent, remove, setSelectedState, setStatus, status
+$page, attr, buddies, button, confirm, data, delegate, each, erase, find,
+findBuddies, getFormattedText, html, init, listview, message, pagehide,
+pageshow, parent, remove, setSelectedState, setStatus, status
 */
 
 //Edit buddies screen object
-var EditBuddyObj = (function($, database) {
+var EditBuddyObj = ( function($, database) {
 	//Reference to current page
 	var $page,
 	//List that holds the buddies
@@ -104,6 +104,7 @@ var EditBuddyObj = (function($, database) {
 		init : function(page) {
 			//update the local variable
 			$page = page;
+
 			//Add an instance variable $page
 			this.$page = page;
 			$buddyList = page.find('#EB_BuddyList');
