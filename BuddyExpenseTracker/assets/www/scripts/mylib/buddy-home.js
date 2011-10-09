@@ -15,8 +15,7 @@ var HomeObj = (function($) {
 				break;
 
 			case 'AddBuddy1':
-				//controller.navigate("#AddBuddy");
-				$.mobile.changePage("#AddBuddyPick");
+				$.mobile.changePage("#AddBuddy");
 				break;
 
 			case 'AddBuddy2':
