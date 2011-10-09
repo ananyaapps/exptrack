@@ -39,6 +39,11 @@ var buddyController = ( function() {
 	};
 
 	retObj.navigate = function(to, options) {
+		var returnObj;
+		if (typeof to === 'string'){
+			returnObj = $.mobile.path.parseUrl(to);
+			logger.log(returnObj);
+		}
 		logger.log(typeof to);
 		$.mobile.changePage(to, options);
 

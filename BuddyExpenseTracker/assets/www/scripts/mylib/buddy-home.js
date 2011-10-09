@@ -1,15 +1,14 @@
 /*global jQuery*/
 /*properties
-    $page, attr, changePage, delegate, find, init, mobile
+$page, attr, changePage, delegate, find, init, mobile
 */
 //Global variables
 
 //HomeObj handles the activities for the homescreen
-var HomeObj = (function($) {
+var HomeObj = ( function($) {
 	//Function to handle clicks in the dashboard
 	function DashBoardHandler(event) {
-		var $this = $(this),
-		action = $this.attr('data-action');
+		var $this = $(this), action = $this.attr('data-action');
 		switch(action) {
 			case 'ListExpense':
 				break;
