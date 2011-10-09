@@ -1,4 +1,4 @@
-database = function() {
+buddy_db = function() {
 	//The constants (So called !!)
 	var NAME = 'BuddyExpendeDb';
 	var VERSION = '1.0';

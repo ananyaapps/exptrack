@@ -1,0 +1,188 @@
+//Object for AddBuddy screen by picking from the contacts
+AddBuddyPickObj = (function($, database) {
+
+	//This page
+	var $page;
+	//Contact list picked from Native contacts database
+	var $contactList;
+	//List that holds the selection field , ie the check icon
+	var $contactSelList;
+	//The object to display the message for the user
+	var $pickContactMessage;
+	//Message for the user..holds the current operation in progress
+	var message;
+
+	//Displayed list of contacts
+	var dispContacts = [];
+
+	//Callback function , if the database is suscessfully updated (from pickcontact section)
+	function pickContactSuscessCB() {
+		$pickContactMessage.html(message + ' suscessful');
+	};
+
+	//Callback function , if the database update failed (from pickcontact section)
+	function pickContactFailureCB(error) {
+		//Set the error message
+		$pickContactMessage.html(message + ' failed ' + error.message).setStatus({
+			status : "error"
+		});
+	};
+
+	//Function to handle the button clicks in PickContact section
+	function pickContactButtonHandler() {
+		var value = $(this).attr('data-action');
+		//number of contacts selected
+		var noContacts = 0;
+		//temporary variables
+		var buddy;
+		//alert(value);
+		switch(value) {
+			case 'LoadContacts':
+				LoadContacts();
+				break;
+
+			case 'Add':
+				//prasanna : some optimisations can be done here
+				$contactSelList.each(function() {
+					if($(this).data('sel-status') === true) {
+						noContacts++;
+					}
+				});
+				//Atleast one contact needs to be selected
+				if(noContacts === 0) {
+					$pickContactMessage.html("Please select contacts to add").setStatus({
+						status : "error"
+					});
+				} else {
+					message = "Update " + noContacts + " buddies";
+					$pickContactMessage.html(message + " in progress.Please wait").setStatus();
+					$contactSelList.each(function(index) {
+						if($(this).data('sel-status') === true) {
+							//Get the object to save in db
+							buddy = dispContacts[index].getDBObject();
+							database.createBuddy(buddy).save(pickContactSuscessCB, pickContactFailureCB);
+						}
+					});
+				}
+				break;
+
+			//Select all the visible contacts
+			case 'SelectAll':
+				$contactSelList.setSelectedState(true);
+				break;
+
+			case 'Deselect':
+				$contactSelList.setSelectedState(false);
+				break;
+
+			default:
+				break;
+		}
+
+		//Prevent default
+		return false;
+	};
+
+	function SelectContact(event) {
+		$(this).setSelectedState();
+		//Prevent defaults
+		return false;
+	};
+
+	//Function to handle populating contact list , when Pick Contact section is expanded
+	function LoadContacts() {
+		//message to be displayed for the user
+		var message;
+		//status of the message for the user
+		var status;
+		//Text in the search bar
+		var filter;
+		//Store the concerned section object
+		//Check if the contact data is already populated
+		$contactList.html('').listview('refresh');
+
+		var onSuccess = function(contacts) {
+			var index;
+			var length = contacts.length;
+			//Actual length of contacts, after filtering
+			var actLength = 0;
+			var list = '';
+			for( index = 0; index < length; index++) {
+				if(contacts[index].displayName !== null) {
+					actLength++;
+					//Store the relevant contact
+					dispContacts.push(contacts[index]);
+					list += contacts[index].getFormattedText();
+				}
+			}
+			message = 'Found ' + actLength + ' contacts';
+
+			$pickContactMessage.html(message).setStatus();
+			$contactList.html(list).listview('refresh');
+			//Update the selection list again, since the list is updated
+			$contactSelList = $contactList.find('.buddy_select');
+		};
+		var onError = function(contactError) {
+			message = 'Fetching contacts failes' + contactError;
+			$pickContactMessage.html(message).setStatus({
+				status : "error"
+			});
+		};
+		//User needs to enter minimum 3 chracters in the search filed
+		filter = $page.find('input[data-type="search"]').val();
+
+		if($.trim(filter).length < 3) {
+			message = 'Please enter min 3 chars';
+			status = "error";
+		} else {
+			message = 'Contacts loading in progress..';
+			status = "wait";
+			var fields = ["displayName", "phoneNumbers", "emails"];
+			navigator.contacts.find(fields, onSuccess, onError, {
+				filter : filter,
+				multiple : true,
+			});
+		}
+		$pickContactMessage.html(message).setStatus({
+			status : status
+		});
+
+		//prevent default
+		return false;
+	};
+
+	var retObj = {
+		//init function for the page.This should be passed the jQuery page object
+		init : function(page) {
+
+			//Store the page in the local variable
+			$page = page;
+			this.$page = page;
+			$pickContactMessage = page.find('#ABP_Msg');
+			$contactList = page.find('#ABP_ContactList');
+
+			//Handle button clicks
+			page.delegate('.buddy_button', 'click', pickContactButtonHandler);
+
+			//Display the default message, default is message status
+			$pickContactMessage.html('Enter min 3 characters to search contacts').setStatus();
+
+			//click handlers , if the contact is selected
+			$contactList.delegate('.buddy_select', 'click', SelectContact);
+			//prasanna : todo : required only temporarily
+			$contactSelList = $contactList.find('.buddy_select');
+		},
+		//function called before hiding the page, do some clean-up
+		pagehide : function() {
+			//Display the default message, default is message status
+			$pickContactMessage.html('Enter min 3 characters to search contacts').setStatus();
+			//Clear the displayed contact list
+			$contactList.html('').listview('refresh');
+			dispContacts = [];
+
+		}
+	};
+
+	return retObj;
+
+})(jQuery, buddy_db);
