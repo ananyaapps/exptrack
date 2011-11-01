@@ -31,7 +31,9 @@
 	function formHandler() {
 
 		var err = '', 
-			values;
+			values,
+			index,
+			buddies = [];
 		//Clear the label format (the red error message etc.)
 		$form.clearForm.clearLabels(inputMapVar);
 		//Dont clear the form , but clear the form messages
@@ -54,16 +56,30 @@
 
 		//Read the form values, in the form of an object
 		values = $form.serializeObject();
+		logger.log(values);
 		//Show a wait message for the user
 		message = "Update buddy ";
 		$msgBox.html(message + 'in progress...').setStatus();
-
-		database.createBuddy({
+		//If count is zero, just add once.
+		if ($.trim(values.AB_Count).length === 0 || values.AB_Count === 0){
+			database.createBuddy({
 			name : values.AB_Name_r,
 			number : values.AB_Number,
 			email : values.AB_EMail
-		}).save(suscessCB, failureCB);
-
+			}).save(suscessCB, failureCB);
+		}
+		else{
+			for (index = 0; index < values.AB_Count; index++){
+				buddies.push(database.createBuddy({
+				name : values.AB_Name_r + '_' + (index + 1),
+				number : values.AB_Number,
+				email : values.AB_EMail
+				}));
+				database.batchOperation(buddies,'save');
+			}
+			logger.log(buddies);
+			
+		}
 		//prevent default behaviour
 		return false;
 
