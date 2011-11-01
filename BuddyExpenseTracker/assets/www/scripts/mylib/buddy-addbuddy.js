@@ -30,7 +30,8 @@
 	//Function that manages the submission of AddBuddy form
 	function formHandler() {
 
-		var err = '', values;
+		var err = '', 
+			values;
 		//Clear the label format (the red error message etc.)
 		$form.clearForm.clearLabels(inputMapVar);
 		//Dont clear the form , but clear the form messages
@@ -51,16 +52,16 @@
 			return false;
 		}
 
-		//Read the form values
-		values = $form.serializeArray();
+		//Read the form values, in the form of an object
+		values = $form.serializeObject();
 		//Show a wait message for the user
 		message = "Update buddy ";
 		$msgBox.html(message + 'in progress...').setStatus();
 
 		database.createBuddy({
-			name : values[0].value,
-			number : values[1].value,
-			email : values[2].value
+			name : values.AB_Name_r,
+			number : values.AB_Number,
+			email : values.AB_EMail
 		}).save(suscessCB, failureCB);
 
 		//prevent default behaviour
