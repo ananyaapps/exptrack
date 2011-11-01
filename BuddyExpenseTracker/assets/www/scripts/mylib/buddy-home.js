@@ -4,7 +4,7 @@ $page, HomeObj, attr, changePage, delegate, find, init, mobile
 */
 //Global variables
 //HomeObj handles the activities for the homescreen
-var buddyExpTrack = ( function(module, $) {
+( function(module, $) {
 	var controller;
 	//Function to handle clicks in the dashboard
 	function DashBoardHandler(event) {
@@ -51,6 +51,7 @@ var buddyExpTrack = ( function(module, $) {
 	};
 
 	module.HomeObj = retObj;
+	window.buddyExpTrack = module;
 	return module;
 
 }((buddyExpTrack || {}), jQuery));

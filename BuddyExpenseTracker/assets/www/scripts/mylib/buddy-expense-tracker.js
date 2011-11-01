@@ -1,5 +1,5 @@
 //Controller sub-module
-var buddyExpTrack = ( function(module, $) {
+( function(module, $) {
 	//Start with an empty
 	var retObj = {}, AddBuddyObj, HomeObj, EditBuddyObj, AddBuddyPickObj, buddy_db;
 
@@ -51,6 +51,7 @@ var buddyExpTrack = ( function(module, $) {
 
 	};
 	module.buddyController = retObj;
+	window.buddyExpTrack = module;
 	return module;
 }((buddyExpTrack || {}), jQuery));
 

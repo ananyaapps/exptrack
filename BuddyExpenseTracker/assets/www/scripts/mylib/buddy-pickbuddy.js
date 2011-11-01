@@ -8,7 +8,7 @@
 
 //Global variables
 //Object for AddBuddy screen by picking from the contacts
-var buddyExpTrack = (function(module,$) {
+(function(module,$) {
 
 	//This page
 	var $page,
@@ -188,6 +188,7 @@ var buddyExpTrack = (function(module,$) {
 		}
 	};
 	module.AddBuddyPickObj = retObj;
+	window.buddyExpTrack = module;
 
 	return module;
 

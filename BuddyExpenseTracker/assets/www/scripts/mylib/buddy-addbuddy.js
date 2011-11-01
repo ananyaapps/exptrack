@@ -8,7 +8,7 @@
 
 //Add Buddy screen object
 //AddBuddy object handles the activities for Add Buddy screen
-var buddyExpTrack = (function(module,$) {
+(function(module,$) {
 
 	//List of form elements to be validated for emptiness
 	var inputMapVar, $form, $page,database,
@@ -122,6 +122,7 @@ var buddyExpTrack = (function(module,$) {
 		}
 	};
 	module.AddBuddyObj = retObj;
+	window.buddyExpTrack = module;
 	return module;
 
 }((buddyExpTrack || {}),jQuery));

@@ -7,7 +7,7 @@
 */
 
 //Edit buddies screen object
-var  buddyExpTrack = ( function(module,$) {
+( function(module,$) {
 	//Reference to current page
 	var $page,
 	//List that holds the buddies
@@ -149,6 +149,7 @@ var  buddyExpTrack = ( function(module,$) {
 		}
 	};
 	module.EditBuddyObj = retObj;
+	window.buddyExpTrack = module;
 	return module;
 
 }((buddyExpTrack || {}),jQuery));

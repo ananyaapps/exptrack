@@ -7,7 +7,8 @@
     userFailCB, userSuscessCB
 */
 var logger;
-var buddyExpTrack = ( function(module,$) {
+var buddyExpTrack;
+( function(module,$) {
 	//The constants (So called !!)
 	var NAME = 'BuddyExpendeDb', VERSION = '1.0', SIZE = 1000000, BUDDY_TABLE = 'BuddyTb', BUDDYEXPENSE_TABLE = 'BuddyExpenseTb',
 
@@ -215,6 +216,7 @@ var buddyExpTrack = ( function(module,$) {
 		}
 	};
 	module.buddy_db = dbObject; 
+	window.buddyExpTrack = module;
 	return module;
 
 }((buddyExpTrack || {}),jQuery));
