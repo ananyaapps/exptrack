@@ -35,7 +35,7 @@
 		//if the database update failed (from pickcontact section)
 		else{
 			//Set the error message
-			$pickContactMessage.html(message + ' failed ' + error.message).setStatus({
+			$pickContactMessage.html(result.cntFailed + ' contact update failed').setStatus({
 				status : "error"
 			});
 		}
@@ -102,8 +102,8 @@
 		var value = $(this).attr('data-action'),
 		//number of contacts selected
 		noContacts = 0,
-		//temporary variables
-		buddy;
+		//buddy array for batch operation
+		buddies = [];
 		//alert(value);
 		switch (value) {
 			case 'LoadContacts':
@@ -112,9 +112,11 @@
 
 			case 'Add':
 				//prasanna : some optimisations can be done here
-				$contactSelList.each(function() {
+				$contactSelList.each(function(index) {
 					if($(this).data('sel-status') === true) {
 						noContacts = noContacts + 1;
+						//Get the object to save in db
+						buddies.push(database.createBuddy(dispContacts[index].getDBObject()));
 					}
 				});
 				//Atleast one contact needs to be selected
@@ -125,13 +127,7 @@
 				} else {
 					message = "Update " + noContacts + " buddies";
 					$pickContactMessage.html(message + " in progress.Please wait").setStatus();
-					$contactSelList.each(function(index) {
-						if($(this).data('sel-status') === true) {
-							//Get the object to save in db
-							buddy = dispContacts[index].getDBObject();
-							database.createBuddy(buddy).save(dbCbk);
-						}
-					});
+					database.batchOperation(buddies,'save',dbCbk);
 				}
 				break;
 

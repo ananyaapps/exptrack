@@ -23,7 +23,9 @@
 	//cache the confirm function
 	confirm = window.confirm,database,
 	//Start with an empty object to return
-	retObj = {};
+	retObj = {},
+	//Store the list of buddies
+	buddies;
 
 	//Default fail CB for database queries
 	function failureCB(error) {
@@ -55,13 +57,17 @@
 
 	//function to handle the button clicks and actions on the page
 	function buttonHandler(event) {
-		var value = $(this).attr('data-action'),buddies = [];
+		var value = $(this).attr('data-action'),
+		delList = [], list = [];
 		switch(value) {
 			case 'Delete':
 				//prasanna : some optimisations can be done here
 				$buddySelList.each(function() {
-					if($(this).data('sel-status') === true) {
+					var $this = $(this);
+					if($this.data('sel-status') === true) {
 						noContacts = noContacts + 1;
+						delList.push(buddies[$this.attr('data-index')]);
+						list.push($this);
 					}
 				});
 				//Atleast one contact needs to be selected
@@ -74,19 +80,11 @@
 					if(confirm('Are you sure to delete ' + noContacts + ' buddies?')) {
 						$message = "Delete " + noContacts + " buddies";
 						$msgBox.html($message + " in progress.Please wait").setStatus();
-						$buddySelList.each(function(index) {
-							var $this = $(this);
-							if($this.data('sel-status') === true) {
-								//Form the array to delete
-								buddies.push($this.data('this_buddy'));
-								//imp : prasanna : dependency on jqm , may break
-								//remove the list element
-								$this.parent().parent().remove();
-							}
+						$.each(list,function(){
+							this.parent().parent().remove();
 						});
-						//Delete the list of buddies
-						database.batchOperation(buddies,'erase',dbCbk);
 						$buddyList.listview('refresh');
+						database.batchOperation(delList,'erase',dbCbk);
 
 					} else {
 						$msgBox.setStatus();
@@ -132,17 +130,15 @@
 		pageshow : function() {
 			//If the query is suscessful, then array of buddy objects will be returned
 			var dbCbk = function(result,error) {
-				var buddies = result.rows, len = buddies.length, str = '', i;
+				var len = result.rows.length, str = '', i;
+				buddies = result.rows;
 				//operation suscessful
 				if(result.cntFailed === 0){
 					for( i = 0; i < len; i = i + 1) {
-						str += buddies[i].getFormattedText('EditBuddies');
+						str += buddies[i].getFormattedText('EditBuddies',i);
 					}
 					$buddyList.html(str).listview('refresh');
-					$buddySelList = $buddyList.find('.buddy_select').each(function(index) {
-						//Store the associated buddy object in DOM
-						$(this).data('this_buddy', buddies[index]);
-					});
+					$buddySelList = $buddyList.find('.buddy_select');
 					$buddySelList.button();
 					$message = "Found " + buddies.length + " Buddies";
 					$msgBox.html($message);					
