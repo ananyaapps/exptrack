@@ -16,15 +16,18 @@
 	message, $msgBox, retObj = {};
 
 	//Callback function , if the database is suscessfully updated
-	function suscessCB() {
-		$msgBox.html(message + 'suscessful').setStatus();
-	}
-
-	//Callback function, if there is an error
-	function failureCB(error) {
-		$msgBox.html(message + 'failed ' + error.message).setStatus({
+	function dbCbk(result,error){
+		//Database operation suscessful.
+		if (result.cntFailed === 0){
+			$msgBox.html(message + 'suscessful').setStatus();	
+		}
+		//Database operation failed
+		else{
+			$msgBox.html(message + 'failed ' + error.message).setStatus({
 			status : 'error'
-		});
+			});
+		}
+		
 	}
 
 	//Function that manages the submission of AddBuddy form
@@ -62,7 +65,7 @@
 			name : values.AB_Name_r,
 			number : values.AB_Number,
 			email : values.AB_EMail
-		}).save(suscessCB, failureCB);
+		}).save(dbCbk);
 
 		//prevent default behaviour
 		return false;

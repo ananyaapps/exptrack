@@ -33,9 +33,18 @@
 
 	}
 
-	//Callback function , if the database is suscessfully updated
-	function suscessCB() {
-		$msgBox.html($message + ' suscessful').setStatus();
+	//Database callback function
+	function dbCbk(result,error){
+		//Database operation suscessful
+		if (result.cntFailed === 0){
+			$msgBox.html($message + ' suscessful').setStatus();	
+		}
+		else{
+			$msgBox.html($message + ' failed ' + error.message).setStatus({
+			status : 'error'
+			});
+		}
+		
 	}
 
 	//Function to handle the click on the checkbox
@@ -69,11 +78,10 @@
 							var $this = $(this);
 							if($this.data('sel-status') === true) {
 								//Delete the buddy from db
-								$this.data('this_buddy').erase(suscessCB, failureCB);
+								$this.data('this_buddy').erase(dbCbk);
 								//imp : prasanna : dependency on jqm , may break
 								//remove the list element
 								$this.parent().parent().remove();
-								//buddies[index].erase(suscessCB, failureCB);
 							}
 						});
 						$buddyList.listview('refresh');
@@ -121,23 +129,29 @@
 		//Function to populate the list with buddies, this should be called after the page is shown
 		pageshow : function() {
 			//If the query is suscessful, then array of buddy objects will be returned
-			var buddySuscess = function(result) {
-				var buddies = result.buddies, len = buddies.length, str = '', i;
-				for( i = 0; i < len; i = i + 1) {
-					str += buddies[i].getFormattedText('EditBuddies');
+			var dbCbk = function(result,error) {
+				var buddies = result.rows, len = buddies.length, str = '', i;
+				//operation suscessful
+				if(result.cntFailed === 0){
+					for( i = 0; i < len; i = i + 1) {
+						str += buddies[i].getFormattedText('EditBuddies');
+					}
+					$buddyList.html(str).listview('refresh');
+					$buddySelList = $buddyList.find('.buddy_select').each(function(index) {
+						//Store the associated buddy object in DOM
+						$(this).data('this_buddy', buddies[index]);
+					});
+					$buddySelList.button();
+					$message = "Found " + buddies.length + " Buddies";
+					$msgBox.html($message);					
 				}
-				$buddyList.html(str).listview('refresh');
-				$buddySelList = $buddyList.find('.buddy_select').each(function(index) {
-					//Store the associated buddy object in DOM
-					$(this).data('this_buddy', buddies[index]);
-				});
-				$buddySelList.button();
-				$message = "Found " + buddies.length + " Buddies";
-				$msgBox.html($message);
+				else{
+					failureCB(error);
+				}
 			};
 			$message = "Populating buddy list";
 			$msgBox.html($message + ' Please wait');
-			database.findBuddies(['name', 'total_expense'], buddySuscess, failureCB);
+			database.findBuddies(['name', 'total_expense'], dbCbk);
 		},
 		//do some cleanup stuff after the page is gone
 		pagehide : function() {
