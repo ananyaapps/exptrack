@@ -135,10 +135,10 @@ var buddyExpTrack;
 		//todo : prasanna : delete the entries from expense table also
 	};
 
-	Buddy.prototype.getFormattedText = function(format) {
+	Buddy.prototype.getFormattedText = function(format,index) {
 		var str = '';
 		//todo : prasanna : adjust the balance amount display
-		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense) + '</strong></p></li>';
+		str += '<li><input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d" data-index="' + index + '"/><h3 class="buddy_list_item">' + this.name + '</h3><p class="ui-li-aside" <strong>balance : ' + (this.total_expense) + '</strong></p></li>';
 		return str;
 	};
 	dbObject = {
