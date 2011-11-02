@@ -25,17 +25,20 @@
 	retObj = {},database,
 	navigator = window.navigator;
 
-	//Callback function , if the database is suscessfully updated (from pickcontact section)
-	function pickContactSuscessCB() {
-		$pickContactMessage.html(message + ' suscessful');
-	}
-
-	//Callback function , if the database update failed (from pickcontact section)
-	function pickContactFailureCB(error) {
-		//Set the error message
-		$pickContactMessage.html(message + ' failed ' + error.message).setStatus({
-			status : "error"
-		});
+	//Database callback function
+	function dbCbk(result,error){
+		//Database operation suscessful
+		//if the database is suscessfully updated (from pickcontact section)
+		if (result.cntFailed === 0){
+			$pickContactMessage.html(message + ' suscessful');
+		}
+		//if the database update failed (from pickcontact section)
+		else{
+			//Set the error message
+			$pickContactMessage.html(message + ' failed ' + error.message).setStatus({
+				status : "error"
+			});
+		}
 	}
 
 	//Function to handle populating contact list , when Pick Contact section is expanded
@@ -126,7 +129,7 @@
 						if($(this).data('sel-status') === true) {
 							//Get the object to save in db
 							buddy = dispContacts[index].getDBObject();
-							database.createBuddy(buddy).save(pickContactSuscessCB, pickContactFailureCB);
+							database.createBuddy(buddy).save(dbCbk);
 						}
 					});
 				}

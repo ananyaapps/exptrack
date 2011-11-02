@@ -55,66 +55,82 @@ var buddyExpTrack;
 	}
 
 
-	Buddy.prototype.save = function(suscessCB, failureCB) {
+	Buddy.prototype.save = function(dbCbk) {
 		//cache the object
-		var that = this;
+		var that = this,
+			result = {};
+		//Result object to be passed to the caller
+		result.cntModified = 0;
+		result.cntFailed = 0;
 		//if callbacks are not provided, use default callbacks
-		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
-		failureCB = failureCB || dbObject.defaults.userFailCB;
+		dbCbk = dbCbk || dbObject.defaults.userSuscessCB;
 		message = 'Saving buddy to the database';
 		//hook the suscess callback to set the id
 		function hookSuscessCB(tx, resultSet) {
-			var result = {};
-			that.id = resultSet.insertId;
-			//number of modified items is 1
+			//1 object saved
 			result.cntModified = 1;
-			result.cntFailed = 0;
+			that.id = resultSet.insertId;
 			//Call the original suscess CB
-			suscessCB(result);
+			dbCbk(result);
+		}
 
+		function hookFailureCB(error){
+			//indicate failure
+			result.cntFailed = 1;
+			dbCbk(result,error);
 		}
 
 		//Save as new entry in the database only if id is -1
 		if(this.id === -1) {
 			db.transaction(function(tx) {
 				tx.executeSql('INSERT INTO ' + BUDDY_TABLE + '(name, number, email,total_expense ) VALUES (?, ?, ?, ?);', [that.name, that.number, that.email, that.total_expense], hookSuscessCB);
-			}, failureCB);
+			}, hookFailureCB);
 		}
 		//todo : prasanna : save the already existing buddy also
 	};
 	//Function to erase buddy from the database
-	Buddy.prototype.erase = function(suscessCB, failureCB) {
+	Buddy.prototype.erase = function(dbCbk) {
 		//cache the object
-		var that = this, custom_error = {};
+		var that = this, 
+			custom_error = {},
+			result = {};
+		//Result object to be passed to the caller
+		result.cntModified = 0;
+		result.cntFailed = 0;			
 		//hook the suscess callback
 		function hookSuscessFunction() {
 			//Set the invalid id, so that the delete attempt on this object fails
 			that.id = -1;
-			var result = {};
 			//set the result, number of modified items is 1
 			result.cntModified = 1;
 			result.cntFailed = 0;
 			//Now call the desired callback
-			suscessCB(result);
+			dbCbk(result);
+		}
+
+		//hook the failure callback
+		function hookFailureFunction(error) {
+			//set the result, operation failed
+			result.cntFailed = 1;
+			//Now call the desired callback
+			dbCbk(result,error);
 		}
 
 		//if callbacks are not provided, use default callbacks
-		suscessCB = suscessCB || dbObject.defaults.userSuscessCB;
-		failureCB = failureCB || dbObject.defaults.userFailCB;
+		dbCbk = dbCbk || dbObject.defaults.userSuscessCB;
 		message = 'Erasing buddy from database';
 		//Delete only if the proper id is available
 		if(this.id === -1 || this.id === undefined || this.id === null) {
 			//id not set properly, delete failed
 			custom_error.code = 101;
 			custom_error.message = 'id not set properly';
-			failureCB(custom_error);
+			hookFailureFunction(custom_error);
 		} else {
 			//proper id available, delete the buddy from the database
 			db.transaction(function(tx) {
 				var query = 'DELETE FROM ' + BUDDY_TABLE + ' WHERE id = ' + that.id;
-				logger.log('query ' + query);
-				tx.executeSql(query, [], suscessCB);
-			}, failureCB);
+				tx.executeSql(query, [], hookSuscessFunction);
+			}, hookFailureFunction);
 		}
 		//todo : prasanna : delete the entries from expense table also
 	};
@@ -140,16 +156,19 @@ var buddyExpTrack;
 			return buddy;
 		},
 		//function to find buddies. suscessCB receives the list of Buddy objects found in the database
-		findBuddies : function(buddyFields, suscessCB, failureCB) {
-			failureCB = failureCB || this.defaults.userFailCB;
-			suscessCB = suscessCB || this.defaults.userSuscessCB;
+		findBuddies : function(buddyFields, dbCbk) {
+			var result = {};
+			//Result object to be passed to the caller
+			result.cntModified = 0;
+			result.cntFailed = 0;
+			dbCbk = dbCbk || this.defaults.userSuscessCB;
 			//Add the id also in the search crieteria
 			buddyFields.push('id');
 			var query = 'SELECT ' + buddyFields.join(', ') + ' FROM ' + BUDDY_TABLE;
 			//Suscess handler for the db query.This function receives the transcation object & results
-			function suscessHandler(tx, results) {
+			function hookSuscessHandler(tx, results) {
 				//cache the rows
-				var result = {}, rows = results.rows, length = rows.length, i,
+				var rows = results.rows, length = rows.length, i,
 				//start with an empty array
 				buddies = [];
 				result.cntModified = length;
@@ -158,15 +177,19 @@ var buddyExpTrack;
 				for( i = 0; i < length; i = i + 1) {
 					buddies.push(new Buddy(rows.item(i)));
 				}
-				result.buddies = buddies;
+				result.rows = buddies;
 				//Call the user callback with the result set
-				suscessCB(result);
+				dbCbk(result);
 			}
 
+			function hookFailureHandler(error){
+				result.cntFailed = 1;
+				dbCbk(result,error);
+			}
 
 			db.transaction(function(tx) {
-				tx.executeSql(query, [], suscessHandler);
-			}, failureCB);
+				tx.executeSql(query, [], hookSuscessHandler);
+			}, hookFailureHandler);
 		},
 		//Function to batch operation
 		//params:
@@ -180,30 +203,32 @@ var buddyExpTrack;
 			result = {}, index = 0;
 			result.cntModified = 0;
 			result.cntFailed = 0;
-			function hookSuscessCB() {
-				result.cntModified = result.cntModified + 1;
-				cbkCount = cbkCount + 1;
-				//Batch operation complete, invoke the user function
-				if(cbkCount === objCount) {
-					dbCbk(result);
-				}
-			}
 
-			function hookFailueCB(err) {
-				result.cntFailed = result.cntFailed + 1;
+			//hook the callback function
+			function dbHookCbk(result,error){
+				//todo : prasanna : combined error should be reported
 				cbkCount = cbkCount + 1;
+				//operation suscess
+				if (result.cntFailed === 0){
+					result.cntModified = result.cntModified + 1;
+				}
+				//operation failed
+				else{
+					result.cntFailed = result.cntFailed + 1;
+				}
 				//Batch operation complete, invoke the user function
 				if(cbkCount === objCount) {
 					dbCbk(result);
-				}
+				}				
+				
 			}
 
 			//batch operation over the collection
 			for( index = 0; index < objCount; index = index + 1) {
 				if(operation === 'erase') {
-					objArray[index].erase(hookSuscessCB, hookFailueCB);
+					objArray[index].erase(dbHookCbk);
 				} else if(operation === 'save') {
-					objArray[index].save(hookSuscessCB, hookFailueCB);
+					objArray[index].save(dbHookCbk);
 				}
 			}
 

@@ -16,15 +16,18 @@
 	message, $msgBox, retObj = {};
 
 	//Callback function , if the database is suscessfully updated
-	function suscessCB() {
-		$msgBox.html(message + 'suscessful').setStatus();
-	}
-
-	//Callback function, if there is an error
-	function failureCB(error) {
-		$msgBox.html(message + 'failed ' + error.message).setStatus({
+	function dbCbk(result,error){
+		//Database operation suscessful.
+		if (result.cntFailed === 0){
+			$msgBox.html(message + 'suscessful').setStatus();	
+		}
+		//Database operation failed
+		else{
+			$msgBox.html(message + 'failed ' + error.message).setStatus({
 			status : 'error'
-		});
+			});
+		}
+		
 	}
 
 	//Function that manages the submission of AddBuddy form
@@ -56,7 +59,6 @@
 
 		//Read the form values, in the form of an object
 		values = $form.serializeObject();
-		logger.log(values);
 		//Show a wait message for the user
 		message = "Update buddy ";
 		$msgBox.html(message + 'in progress...').setStatus();
@@ -66,7 +68,7 @@
 			name : values.AB_Name_r,
 			number : values.AB_Number,
 			email : values.AB_EMail
-			}).save(suscessCB, failureCB);
+			}).save(dbCbk);
 		}
 		else{
 			for (index = 0; index < values.AB_Count; index++){
@@ -75,7 +77,7 @@
 				number : values.AB_Number,
 				email : values.AB_EMail
 				}));
-				database.batchOperation(buddies,'save');
+				database.batchOperation(buddies,'save',dbCbk);
 			}
 			logger.log(buddies);
 			
