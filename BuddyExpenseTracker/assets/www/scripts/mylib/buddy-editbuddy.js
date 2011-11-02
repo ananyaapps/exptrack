@@ -55,7 +55,7 @@
 
 	//function to handle the button clicks and actions on the page
 	function buttonHandler(event) {
-		var value = $(this).attr('data-action');
+		var value = $(this).attr('data-action'),buddies = [];
 		switch(value) {
 			case 'Delete':
 				//prasanna : some optimisations can be done here
@@ -77,13 +77,15 @@
 						$buddySelList.each(function(index) {
 							var $this = $(this);
 							if($this.data('sel-status') === true) {
-								//Delete the buddy from db
-								$this.data('this_buddy').erase(dbCbk);
+								//Form the array to delete
+								buddies.push($this.data('this_buddy'));
 								//imp : prasanna : dependency on jqm , may break
 								//remove the list element
 								$this.parent().parent().remove();
 							}
 						});
+						//Delete the list of buddies
+						database.batchOperation(buddies,'erase',dbCbk);
 						$buddyList.listview('refresh');
 
 					} else {
