@@ -1,27 +1,13 @@
+var buddyExpTrack = {};
 //Controller sub-module
 ( function(module, $) {
 	//Start with an empty
 	var retObj = {}, AddBuddyObj, HomeObj, EditBuddyObj, AddBuddyPickObj, buddy_db;
 
-	//Initialisation function for AddBuddy screen, called when the page is created
-	function addBuddyInit(){
-		var $page = $('#AddBuddy');
-		AddBuddyObj.init($page);
-		//Clear some stuff on the page before hiding
-		$page.live('pagehide', AddBuddyObj.pagehide);
-	}
-
 	//Initialisation function for Home screen, called when the page is created
 	function homeInit(){
 		var $page = $('#HomeScreen');
 		HomeObj.init($page);
-	}
-
-	//Initialisation function for Add buddy pick screen, called when the page is created
-	function addBuddyPickInit(){
-		var $page = $('#AddBuddyPick');
-		AddBuddyPickObj.init($page);
-		$page.live('pagehide', AddBuddyPickObj.pagehide);
 	}
 
 	//Initialisation function for EditBuddies screen, called when the page is created
@@ -54,6 +40,7 @@
 	
 	//This function is called upon page initialisation. This is the equivalent of DOM ready for a page
 	retObj.pageInit = function(event){
+		logger.log("In buddyExpTrack.buddyController.pageInit");
 		var page = event.target.id;
 		logger.log(event.target.id);
 		switch(page){
@@ -62,15 +49,15 @@
 			break;
 
 			case 'AddBuddy':
-				addBuddyInit();
+				//addBuddyInit();
 			break;
 
 			case 'AddBuddyPick':
-				addBuddyPickInit();
+				//addBuddyPickInit();
 			break;
 
 			case 'EditBuddies':
-				editBuddiesInit();
+				//editBuddiesInit();
 			break;
 		}
 	};
@@ -90,11 +77,97 @@ $(document).ready(function() {
 			minWidth : '100% !important'
 		});
 	}
+	
+	logger.log("In document ready");
 	$(document).bind('pageinit',buddyExpTrack.buddyController.pageInit);
 });
 
 $(document).bind("mobileinit", function() {
+	//buddyExpTrack.buddyController.init();
+	// Disable the page transitions, as they dont work properly in Android
+	// todo : Disable only for android based devices
+	logger.log("In mobileinit");
+	initAppRouter(buddyExpTrack);
 	$.mobile.defaultPageTransition = 'none';
 	$.mobile.page.prototype.options.addBackBtn = true;
 	$.mobile.useFastClick = false;
 });
+
+
+function initAppRouter(module)
+{
+	//Initialise router
+		module.router = new $.mobile.Router({
+		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
+		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h"},
+		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
+		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
+		},
+		{
+			firstPage: function(type,match,ui){
+				logger.log("firstPage: "+type+" "+match[0]);
+			},
+			
+			//Function to handle transitions to & from addBuddyPage
+			addBuddyPage: function(type,match,ui){
+				logger.log("addBuddyPage: "+type+" "+match[0]);
+				switch(type){
+					case 'pageinit':
+						module.AddBuddyObj.init($('#AddBuddy'));
+					break;
+
+					case 'pagehide':
+						module.AddBuddyObj.pagehide();
+					break;
+
+					default:
+					break;
+				}
+			},
+
+			//Function to handle transitions to & from addBuddyPickPage
+			addBuddyPickPage: function(type,match,ui){
+				logger.log("addBuddyPickPage: "+type+" "+match[0]);
+				switch(type){
+					case 'pageinit':
+						module.AddBuddyPickObj.init($('#AddBuddyPick'));
+					break;
+
+					case 'pagehide':
+						module.AddBuddyPickObj.pagehide();
+					break;
+
+					default:
+					break;
+				}
+			},
+			editBuddiesPage : function(type,match,ui){
+				logger.log("editBuddiesPage: "+type+" "+match[0]);
+				switch(type){
+					case 'pageinit':
+						module.EditBuddyObj.init($('#EditBuddies'));
+					break;
+
+					case 'pagehide':
+						module.EditBuddyObj.pagehide();
+					break;
+
+					case 'pageshow':
+						module.EditBuddyObj.pageshow();
+					break;					
+
+					default:
+					break;
+				}
+			}
+		},
+		{ 
+			defaultHandler: function(type, ui, page) {
+				logger.log("Default handler called due to unknown route (" 
+					+ type + ", " + ui + ", " + page + ")");
+		},
+		// defaultHandlerEvents: "s",
+		ajaxApp : true,
+		firstMatchOnly : true
+	});
+}
