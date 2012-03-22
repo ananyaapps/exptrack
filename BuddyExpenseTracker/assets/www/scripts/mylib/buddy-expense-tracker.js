@@ -32,10 +32,18 @@ $(document).bind("mobileinit", function() {
 //Initialise the router
 function initAppRouter()
 {
-	//Initialise router
+		// bc  => pagebeforecreate
+  //       c   => pagecreate
+  //       i   => pageinit
+  //       bs  => pagebeforeshow
+  //       s   => pageshow
+  //       bh  => pagebeforehide
+  //       h   => pagehide
+  //       rm  => pageremove
+		//Initialise router
 		module.router = new $.mobile.Router({
 		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
-		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h"},
+		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h,c,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
 		},
@@ -45,15 +53,39 @@ function initAppRouter()
 			},
 			
 			//Function to handle transitions to & from addBuddyPage
-			addBuddyPage: function(type,match,ui){
+			addBuddyPage: function(type,match,ui,page){
 				logger.log("addBuddyPage: "+type+" "+match[0]);
+				if (!arguments.callee.store)
+				{
+					arguments.callee.store = {};
+				}
+				var buddy,addBuddyView;
 				switch(type){
-					case 'pageinit':
-						module.AddBuddyObj.init($('#AddBuddy'));
+					//markup is not applied by jquery-mobile at pagecreate event
+					case 'pagecreate':
+					// case 'pageinit':
+					//Create an empty buddy model
+					buddy = new module.Buddy();
+					//Create a view
+					addBuddyView = new module.AddBuddyView({model: buddy});
+					arguments.callee.store.buddy = buddy;
+					arguments.callee.store.addBuddyView = addBuddyView;
+					$(page).find('#AB_content').html(addBuddyView.render().el)
+						// module.AddBuddyObj.init($('#AddBuddy'));
 					break;
 
 					case 'pagehide':
-						module.AddBuddyObj.pagehide();
+						//retirve the reference to view
+						addBuddyView = arguments.callee.store.addBuddyView;
+						//Call a function to soft clear the view 
+						addBuddyView.clearView();
+					break;
+
+					case 'pageremove' :
+						arguments.callee.store.addBuddyView.close();
+					break;
+
+					case 'pagebeforeshow' :
 					break;
 
 					default:
@@ -62,7 +94,7 @@ function initAppRouter()
 			},
 
 			//Function to handle transitions to & from addBuddyPickPage
-			addBuddyPickPage: function(type,match,ui){
+			addBuddyPickPage: function(type,match,ui,page){
 				logger.log("addBuddyPickPage: "+type+" "+match[0]);
 				switch(type){
 					case 'pageinit':
@@ -95,7 +127,15 @@ function initAppRouter()
 					default:
 					break;
 				}
-			}
+			},
+			//Useful for automatically closing the views properly avoiding any memory leakage
+			showView:function (selector, view) {
+			        if (this.currentView)
+			            this.currentView.close();
+			        $(selector).html(view.render().el);
+			        this.currentView = view;
+			        return view;
+			    },			
 		},
 		{ 
 			defaultHandler: function(type, ui, page) {
