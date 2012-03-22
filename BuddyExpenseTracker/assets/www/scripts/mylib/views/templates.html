@@ -1,0 +1,26 @@
+<script type="text/template" id="buddy-form-template">
+        <label for="date" class="select">Date</label>
+        <% if (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0) { %>
+            <input type="date" name="date" id="date" placeholder="Date" value="<%= dateInputType %>" />
+        <% }else{ %>
+            <input type="date" name="date" id="date" placeholder="Date" value="<%= displayDate %>" />
+        <% } %>
+        
+        <label for="type" class="select">Type</label>
+        <select name="type" id="type">
+            <option>Run</option>
+            <option>Bike</option>
+            <option>Swim</option>
+            <option>Walk</option>
+        </select>
+        
+        <label for="distance">Distance</label>
+        <input type="text" name="distance" id="distance" placeholder="" value="<%= distance %>" />
+    
+        <label for="minutes">Minutes</label>
+        <input type="tel" name="minutes" id="minutes" placeholder="" value="<%= minutes %>" />
+        
+        <div data-role="fieldcontain">
+            <textarea name="comments" id="comments" placeholder="Comments"><%= comments %></textarea>
+        </div>
+</script>

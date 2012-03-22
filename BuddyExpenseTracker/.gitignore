@@ -6,7 +6,11 @@
 /gen
 /res
 /libs
+/bin
 .classpath
 .project
 *.sublime-project
 *.sublime-workspace
+*.apk
+*.class
+*.dex
