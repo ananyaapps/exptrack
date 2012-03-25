@@ -249,20 +249,23 @@ var buddyExpTrack;
 logger = ( function($) {
 	var retObj;
 	retObj = {
-		log : function(msg) {
-			var message = '', key;
+		log : function(msg){
 			window.console.log(msg);
-			if( typeof msg === 'object') {
-				for(key in msg) {
-					if(msg.hasOwnProperty(key)) {
-						message = message + '    ' + key + " : " + msg[key];
-					}
-				}
-			} else {
-				message = '    ' + msg;
-			}
-			$('#DebugMessage').append(message);
 		}
+		// log : function(msg) {
+		// 	var message = '', key;
+		// 	window.console.log(msg);
+		// 	if( typeof msg === 'object') {
+		// 		for(key in msg) {
+		// 			if(msg.hasOwnProperty(key)) {
+		// 				message = message + '    ' + key + " : " + msg[key];
+		// 			}
+		// 		}
+		// 	} else {
+		// 		message = '    ' + msg;
+		// 	}
+		// 	$('#DebugMessage').append(message);
+		// }
 	};
 	return retObj;
 }(jQuery));

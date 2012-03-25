@@ -26,6 +26,8 @@ $(document).bind("mobileinit", function() {
 	module.buddy_db.init();
 	$.mobile.defaultPageTransition = 'none';
 	$.mobile.page.prototype.options.addBackBtn = true;
+	$.support.cors = true;
+	$.mobile.allowCrossDomainPages = true;
 	$.mobile.useFastClick = false;
 	});	
 
@@ -43,7 +45,7 @@ function initAppRouter()
 		//Initialise router
 		module.router = new $.mobile.Router({
 		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
-		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h,c,bs,rm"},
+		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
 		},
@@ -62,16 +64,17 @@ function initAppRouter()
 				var buddy,addBuddyView;
 				switch(type){
 					//markup is not applied by jquery-mobile at pagecreate event
-					case 'pagecreate':
-					// case 'pageinit':
-					//Create an empty buddy model
-					buddy = new module.Buddy();
-					//Create a view
-					addBuddyView = new module.AddBuddyView({model: buddy});
-					arguments.callee.store.buddy = buddy;
-					arguments.callee.store.addBuddyView = addBuddyView;
-					$(page).find('#AB_content').html(addBuddyView.render().el)
-						// module.AddBuddyObj.init($('#AddBuddy'));
+					// case 'pagecreate':
+					case 'pageinit':
+						//Create an empty buddy model
+						buddy = new module.Buddy();
+						//Create a view
+						var $container = $(page).find('#AB_content');
+						addBuddyView = new module.AddBuddyView({model: buddy});
+						arguments.callee.store.buddy = buddy;
+						arguments.callee.store.addBuddyView = addBuddyView;
+						$container.append(addBuddyView.render().$el);
+						addBuddyView.$el.trigger("create");
 					break;
 
 					case 'pagehide':
@@ -83,6 +86,7 @@ function initAppRouter()
 
 					case 'pageremove' :
 						arguments.callee.store.addBuddyView.close();
+						delete arguments.callee.store;
 					break;
 
 					case 'pagebeforeshow' :
