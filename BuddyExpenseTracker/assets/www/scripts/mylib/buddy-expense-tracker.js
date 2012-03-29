@@ -45,7 +45,7 @@ function initAppRouter()
 		//Initialise router
 		module.router = new $.mobile.Router({
 		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
-		"#AddBuddy$": {handler: "addBuddyPage", events: "i,h,bs,rm"},
+		"#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
 		},
@@ -64,8 +64,8 @@ function initAppRouter()
 				var buddy,addBuddyView;
 				switch(type){
 					//markup is not applied by jquery-mobile at pagecreate event
-					// case 'pagecreate':
-					case 'pageinit':
+					case 'pagecreate':
+						// case 'pageinit':
 						//Create an empty buddy model
 						buddy = new module.Buddy();
 						//Create a view

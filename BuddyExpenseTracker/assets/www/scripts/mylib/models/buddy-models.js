@@ -4,7 +4,7 @@ module.Buddy = Backbone.Model.extend({
 	defaults: {
             name: '',
             number: '',
-            total_expense: '',
+            total_expense: 0,
             email: ''
         }
 });

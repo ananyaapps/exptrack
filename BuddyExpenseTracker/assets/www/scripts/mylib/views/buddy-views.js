@@ -23,7 +23,7 @@
             if (formStatus === true){
                 //form is valid, update the model
                 this.model.set(formJSON);
-                this.model.save();
+                // this.model.save();
                 logger.log(this.model);
 
             }
