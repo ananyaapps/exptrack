@@ -11,6 +11,9 @@ module.Buddy = Backbone.Model.extend({
 
 module.Buddies = Backbone.Collection.extend({
     model: module.Buddy,
+    table : module.buddyTable
 });	
+
+module.buddies = new module.Buddies();
 
 }((buddyExpTrack || {}), jQuery));

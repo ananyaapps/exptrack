@@ -99,13 +99,13 @@ logger = ( function($) {
 		create: function (model, success, error) {
 			logger.log("sql create");
 
-			var sql = "INSERT INTO " + BUDDY_TABLE + " (name, number, email) VALUES (?, ?, ?)";
-			var values = [model.get('name'), model.get('number'), model.get('number')];
+			var sql = "INSERT INTO " + BUDDY_TABLE + " (name, number, email,total_expense) VALUES (?, ?, ?, ?)";
+			var values = [model.get('name'), model.get('number'), model.get('number'), model.get('total_expense')];
 			// Set the ID of the model later, in the callback
 			this.options.action = "set_id";
 			this.options.model = model;
 			this.options.success = success;
-			this._executeSql(sql, values, this.success, error);
+			this._executeSql(sql, values, _.bind(this.success,this), error);
 		},
 
 		destroy: function (model, success, error) {
@@ -150,8 +150,8 @@ logger = ( function($) {
 	Backbone.sync = function (method, model, options) {
 	  var table = model.table || model.collection.table, success, error;
 
-	  if (store == null) {
-	    console.warn("[BACKBONE-WEBSQL] model without store object -> ", model);
+	  if (table == null) {
+	    console.warn("[BACKBONE-WEBSQL] model without table object -> ", model);
 	    return;
 	  }
 
@@ -167,9 +167,10 @@ logger = ( function($) {
 	    options.success(result);
 	  };
 	  
-	  error = function (error) {
-	    console.error("sql error");
-	    console.error(error);
+	  error = function (tx, error) {
+	    console.warn("sql error");
+	    console.warn(error);
+	    options.success(error);
 	  };
 
 	  switch(method) {
@@ -179,7 +180,7 @@ logger = ( function($) {
 	      break;
 	    case "update":  table.update(model, success, error);
 	      break;
-	    case "delete":  store.destroy(model, success, error);
+	    case "delete":  table.destroy(model, success, error);
 	      break;
 	    default:
 	      logger.log(method);

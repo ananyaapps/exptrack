@@ -4,6 +4,7 @@ label.missing  {
 }
 
 .buddy_error {
+	font-size: 1em;
 	color:#FF0000;
 	font-weight:bold;
 }

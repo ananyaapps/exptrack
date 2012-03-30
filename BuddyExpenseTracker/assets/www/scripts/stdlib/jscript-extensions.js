@@ -4,6 +4,7 @@ Function.prototype.method = function(name, func) {
 	this.prototype[name] = func;
 	return this;
 };
+
 // Array Remove - By John Resig (MIT Licensed)
 Array.method('remove', function(from, to) {
 	var rest = this.slice((to || from) + 1 || this.length);

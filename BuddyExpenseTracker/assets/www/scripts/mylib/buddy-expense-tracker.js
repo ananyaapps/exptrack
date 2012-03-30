@@ -45,7 +45,8 @@ function initAppRouter()
 		//Initialise router
 		module.router = new $.mobile.Router({
 		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
-		"#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
+		"#AddBuddy(?:[?/](.*))?": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
+		// "#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
 		},
@@ -56,11 +57,14 @@ function initAppRouter()
 			
 			//Function to handle transitions to & from addBuddyPage
 			addBuddyPage: function(type,match,ui,page){
+				var store;
 				logger.log("addBuddyPage: "+type+" "+match[0]);
+				logger.log(match[1]);
 				if (!arguments.callee.store)
 				{
 					arguments.callee.store = {};
 				}
+				store = arguments.callee.store;
 				var buddy,addBuddyView;
 				switch(type){
 					//markup is not applied by jquery-mobile at pagecreate event
@@ -68,20 +72,37 @@ function initAppRouter()
 						// case 'pageinit':
 						//Create an empty buddy model
 						buddy = new module.Buddy();
+						//Add the newly created model to collection
+						module.buddies.add(buddy);
 						//Create a view
 						var $container = $(page).find('#AB_content');
 						addBuddyView = new module.AddBuddyView({model: buddy});
-						arguments.callee.store.buddy = buddy;
-						arguments.callee.store.addBuddyView = addBuddyView;
+						store.model = buddy;
+						store.addBuddyView = addBuddyView;
 						$container.append(addBuddyView.render().$el);
-						addBuddyView.$el.trigger("create");
+					break;
+
+					case 'pagebeforeshow' :
+						// Check if the model associated with the view is already stored
+						if (!store.model.isNew()){
+							//model is already saved, create a new model and associate with the view
+							//Create an empty buddy model
+							buddy = new module.Buddy();
+							//Add the newly created model to collection
+							module.buddies.add(buddy);
+							// Store the reference
+							store.model = buddy;
+							store.addBuddyView.model = buddy;
+						}
+						store.addBuddyView.pagebeforeshow();
+
 					break;
 
 					case 'pagehide':
 						//retirve the reference to view
-						addBuddyView = arguments.callee.store.addBuddyView;
+						addBuddyView = store.addBuddyView;
 						//Call a function to soft clear the view 
-						addBuddyView.clearView();
+						addBuddyView.pagehide();
 					break;
 
 					case 'pageremove' :
