@@ -94,7 +94,34 @@
         }
     });
 
+    //Home screen view, to encapsulate the home screen
+    module.HomeView = Backbone.View.extend({
+        events : {
+            "click a" : "clickHandler"
+        },
+
+        clickHandler : function (e){
+            //Find out the action
+            // Yes..this is a little strange way of getting the action
+            var action = $(e.currentTarget).attr('data-action');
+            switch (action){
+                case 'AddBuddy1' :
+                    $.mobile.showPageLoadingMsg();
+                break;
+            }
+
+            logger.log(action);
+        },
+
+        initialize : function (){
+            //empty function as of now
+            this.delegateEvents();
+        }
+
+    });
+
 }((buddyExpTrack || {}), jQuery));    
 
 
  
+

@@ -3,17 +3,16 @@ var buddyExpTrack = {};
 ( function(module, $) {
 
 	$(document).ready(function() {
-	if( typeof (PhoneGap) !== 'undefined') {
-		$('body > *').css({
-			minHeight : '100% !important',
-			minWidth : '100% !important'
-		});
-	}
-	
-	logger.log("In document ready");
-	// $('body').load('scripts/views/templates.html',function (text){
-	// 	logger.log(text);
-	// })
+		if( typeof (PhoneGap) !== 'undefined') {
+			$('body > *').css({
+				minHeight : '100% !important',
+				minWidth : '100% !important'
+			});
+		}
+		
+		logger.log("In document ready");
+		// Create a homescreen view, pass the existing HomeScreen itself as the view's root
+		new module.HomeView({el:$(document).find('#HomeScreenButtons')});
 	});
 
 $(document).bind("mobileinit", function() {
@@ -44,15 +43,20 @@ function initAppRouter()
   //       rm  => pageremove
 		//Initialise router
 		module.router = new $.mobile.Router({
-		"(?:index.html$|#HomeScreen)": {handler: "firstPage", events: "i,bs,s,h"},
+		"(?:index.html$|#HomeScreen)": {handler: "homePage", events: "i,rm"},
 		"#AddBuddy(?:[?/](.*))?": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		// "#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
 		},
 		{
-			firstPage: function(type,match,ui){
-				logger.log("firstPage: "+type+" "+match[0]);
+			homePage: function(type,match,ui,page){
+				logger.log("homePage: "+type+" "+match[0]);
+				switch(type){
+					case 'pagecreate':
+
+					break;
+				}
 			},
 			
 			//Function to handle transitions to & from addBuddyPage
