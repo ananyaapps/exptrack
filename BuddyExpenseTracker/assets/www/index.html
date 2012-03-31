@@ -36,7 +36,7 @@
 		<!-- /header -->
 		<div class="ui-grid-a" id="HomeScreenButtons">
 			<a href="#Dummy" data-role="button" data-action="ListExpense">Expense List</a>
-			<a href="#AddBuddy?1" data-role="button" data-action="AddBuddy1">Add Buddy-1</a>
+			<a href="#AddBuddy" data-role="button" data-action="AddBuddy1">Add Buddy-1</a>
 			<a href="#AddBuddyPick" data-role="button" data-action="AddBuddy2">Add Buddy-2</a>
 			<a href="#Dummy" data-role="button" data-action="AddExpense">Add Expense</a>
 			<a href="#EditBuddies" data-role="button" data-action="EditBuddies">Edit Buddies</a>
@@ -117,9 +117,9 @@
 		</div>
 		<!-- /content -->
 		<div data-role="footer" data-position="fixed" class="ui-bar">
-			<input type="button" class="buddy_button" value="Delete" data-action="Delete" />
-			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" />
-			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect"/>
+			<input type="button" class="buddy_button" value="Delete" data-action="Delete" data-inline="true"/>
+			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" data-inline="true"/>
+			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect" data-inline="true"/>
 		</div>
 		<!-- /footer -->
 	</div>
