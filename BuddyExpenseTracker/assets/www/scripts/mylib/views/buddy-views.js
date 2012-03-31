@@ -45,7 +45,6 @@
                 '#AB_Name' : 'minlength(3)',
                 '#AB_EMail' : 'email'
              });
-            this.$message = this.$el.find("#AB_Msg").text("Hi");
              // this.$el.trigger("create");
              return this;
         },
@@ -55,7 +54,6 @@
         modelSync : function(model,error){
             if (model.isNew()){
                 //Check if the object is still new ie some problem during save
-                this.$message.text("adding failed :" + error.message);
                 $().toastmessage('showToast', {
                     text     : 'Adding failed : name already exists',
                     sticky   : false,
