@@ -34,6 +34,7 @@
         },
         
         initialize: function() {
+            // todo : idea : use the fully finished form as a template
             this.template = _.template($('#buddy-form-template').html());
         },
         
@@ -55,9 +56,18 @@
             if (model.isNew()){
                 //Check if the object is still new ie some problem during save
                 this.$message.text("adding failed :" + error.message);
+                $().toastmessage('showToast', {
+                    text     : 'Adding failed : name already exists',
+                    sticky   : false,
+                    type     : 'error'
+                }); 
             }
             else{
-                this.$message.text("adding suscessful");
+                $().toastmessage('showToast', {
+                    text     : 'Successfully added buddy',
+                    sticky   : false,
+                    type     : 'success'
+                }); 
                 // add model to collection
                 this.collection.add(model);
                 // unbind the event handlers
@@ -65,7 +75,6 @@
             }
             // Clear the form 
             this.pagehide();
-            // show some toast message
         },
         
         //Function called before the page is shown
