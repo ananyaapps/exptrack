@@ -1,5 +1,30 @@
 ( function(module, $) {
 
+    //Home screen view, to encapsulate the home screen
+    module.HomeView = Backbone.View.extend({
+        events : {
+            "click a" : "clickHandler"
+        },
+
+        clickHandler : function (e){
+            //Find out the action
+            // Yes..this is a little strange way of getting the action
+            var action = $(e.currentTarget).attr('data-action');
+            switch (action){
+                case 'AddBuddy1' :
+                    $.mobile.showPageLoadingMsg();
+                break;
+            }
+
+            logger.log(action);
+        },
+
+        initialize : function (){
+            //empty function as of now
+        }
+
+    });
+
     module.AddBuddyView = Backbone.View.extend({
         tagName:"form", 
         //since this template will render inside a div, we don't need to specify a tagname, but we do want the fieldcontain
@@ -94,28 +119,36 @@
         }
     });
 
-    //Home screen view, to encapsulate the home screen
-    module.HomeView = Backbone.View.extend({
-        events : {
-            "click a" : "clickHandler"
+    module.ExpenseListView = Backbone.View.extend({
+        attributes: {"data-role": "content"},
+
+        initialize : function(){
+            this.template = _.template($('#buddy-expenselist-template').html());
+        },
+        render : function(){
+            $(this.el).html(this.template());
+            this.$list = this.$el.find('ul');
+
+            _.each(this.model.models, function (buddy) {
+                    this.$list.append(new module.expenseView({"model":buddy}).render().el);
+                }, this);
+            
+            return this;
+        }
+
+    });
+
+    // Individual item view
+    module.expenseView = Backbone.View.extend({
+        tagName : 'li',
+
+        initialize : function(){
+            this.template = _.template($('#buddy-expense-template').html());
         },
 
-        clickHandler : function (e){
-            //Find out the action
-            // Yes..this is a little strange way of getting the action
-            var action = $(e.currentTarget).attr('data-action');
-            switch (action){
-                case 'AddBuddy1' :
-                    $.mobile.showPageLoadingMsg();
-                break;
-            }
-
-            logger.log(action);
-        },
-
-        initialize : function (){
-            //empty function as of now
-            this.delegateEvents();
+        render : function(){
+            $(this.el).html(this.template(this.model.toJSON()));
+            return this;
         }
 
     });

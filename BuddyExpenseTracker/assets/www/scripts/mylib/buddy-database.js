@@ -160,7 +160,6 @@ logger = ( function($) {
 	    if (len > 0) {
 	      result = [];
 	      for (i=0; i<len; i++) {
-	        logger.log(res.rows.item(i));
 	        result.push(res.rows.item(i));
 	      }
 	    } 

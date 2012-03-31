@@ -16,5 +16,7 @@ module.Buddies = Backbone.Collection.extend({
 });	
 
 module.buddies = new module.Buddies();
+// Fetch the current collection from the database
+module.buddies.fetch();
 
 }((buddyExpTrack || {}), jQuery));

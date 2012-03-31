@@ -104,24 +104,13 @@
 	<div data-role="page" id="EditBuddies" data-theme="b">
 		<div data-role="header" data-position="fixed">
 			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
-			<h1>Edit Buddies</h1>
+			<h1>Expense List</h1>
 		</div>
-		<!-- /header -->
-		<div data-role="content">
-			<h5 id="EB_Msg"></h5>
-			<div data-role="fieldcontain">
-				<form>
-					<ul id = "EB_BuddyList" data-role="listview" data-filter="true"></ul>
-				</form>
-			</div>
-		</div>
-		<!-- /content -->
 		<div data-role="footer" data-position="fixed" class="ui-bar">
 			<input type="button" class="buddy_button" value="Delete" data-action="Delete" data-inline="true"/>
 			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" data-inline="true"/>
 			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect" data-inline="true"/>
 		</div>
-		<!-- /footer -->
 	</div>
 <script type="text/template" id="buddy-form-template">
 		<ul data-role="listview">
@@ -147,6 +136,22 @@
 			</li>
 		</ul>
 </script>	
+
+<script type="text/template" id="buddy-expenselist-template">
+			<h5 id="EB_Msg"></h5>
+			<div data-role="fieldcontain">
+				<form>
+					<ul id = "EB_BuddyList" data-role="listview" data-filter="true"></ul>
+				</form>
+			</div>
+</script>
+
+<script type="text/template" id="buddy-expense-template">
+<input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d" data-index="<%= id %>"/>
+<h3 class="buddy_list_item"><%= name %></h3>
+<p class="ui-li-aside" <strong>balance : <%= total_expense %></strong></p>
+</script>
+
 </body>
 </html> 
 

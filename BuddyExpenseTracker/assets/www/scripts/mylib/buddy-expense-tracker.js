@@ -47,7 +47,7 @@ function initAppRouter()
 		"#AddBuddy(?:[?/](.*))?": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		// "#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
-		"#EditBuddies$": {handler: "editBuddiesPage", events: "i,h,s"},
+		"#EditBuddies$": {handler: "expenseListPage", events: "c,bs,h,rm"},
 		},
 		{
 			homePage: function(type,match,ui,page){
@@ -77,7 +77,7 @@ function initAppRouter()
 						var $container = $(page).find('#AB_content');
 						addBuddyView = new module.AddBuddyView({collection : module.buddies});
 						store.addBuddyView = addBuddyView;
-						$container.append(addBuddyView.render().$el);
+						$container.append(addBuddyView.render().el);
 					break;
 
 					case 'pagebeforeshow' :
@@ -120,19 +120,28 @@ function initAppRouter()
 					break;
 				}
 			},
-			editBuddiesPage : function(type,match,ui){
-				logger.log("editBuddiesPage: "+type+" "+match[0]);
+			expenseListPage : function(type,match,ui,page){
+				var store,view,$header;
+				// logger.log(match[1]);
+				if (!arguments.callee.store)
+				{
+					arguments.callee.store = {};
+				}
+				store = arguments.callee.store;
+				
 				switch(type){
-					case 'pageinit':
-						module.EditBuddyObj.init($('#EditBuddies'));
+					case 'pagecreate':
+						$footer = $(page).find("div[data-role='footer']");
+						// footer would be accessbile within the View
+						view = new module.ExpenseListView({"$footer" : $footer,"model" : module.buddies});
+						store.view = view;
+						$(page).append(view.render().el);
 					break;
 
 					case 'pagehide':
-						module.EditBuddyObj.pagehide();
 					break;
 
-					case 'pageshow':
-						module.EditBuddyObj.pageshow();
+					case 'pagebeforeshow':
 					break;					
 
 					default:
