@@ -15,15 +15,17 @@
         },
 
         formHandler : function (e){
-            var $form,formJSON,formStatus;
+            var $form,formJSON,formStatus,buddy;
             $form = this.$el;
             formJSON = $form.formParams();
             formStatus = $form.ketchup('isValid');
 
+            // Check if the form is valid
             if (formStatus === true){
-                //form is valid, update the model
-                this.model.set(formJSON,{silent: true});
-                this.model.save();
+                //Create a buddy model
+                buddy = new module.Buddy(formJSON);
+                buddy.on('sync',this.modelSync,this);
+                buddy.save();
             }
             else{
 
@@ -36,28 +38,40 @@
         },
         
         render: function() {
-             $(this.el).html(this.template(this.model.toJSON()));
+             $(this.el).html(this.template(module.Buddy.prototype.defaults));
              // enable validations on the form
              this.$el.ketchup({},{
                 '#AB_Name' : 'minlength(3)',
                 '#AB_EMail' : 'email'
              });
-             this.$message = this.$el.find("#AB_Msg").text("Hi");
+            this.$message = this.$el.find("#AB_Msg").text("Hi");
              // this.$el.trigger("create");
              return this;
         },
 
-        eventHandlerTest : function(m1,m2,m3){
-            logger.log("event handler called");
-            logger.log(m1);
-            logger.log(m2);
-            logger.log(m3);
+        // Sync event handler, called after the model is saved / save failed to database
+        // In case of error, the error argument will be set to SQLError
+        modelSync : function(model,error){
+            if (model.isNew()){
+                //Check if the object is still new ie some problem during save
+                this.$message.text("adding failed :" + error.message);
+            }
+            else{
+                this.$message.text("adding suscessful");
+                // add model to collection
+                this.collection.add(model);
+                // unbind the event handlers
+                model.on('sync',this.modelSync);
+            }
+            // Clear the form 
+            this.pagehide();
+            // show some toast message
         },
         
         //Function called before the page is shown
         pagebeforeshow : function(){
             //Bind to model's events
-            this.model.on("all",this.eventHandlerTest,this);
+            // this.model.on("all",this.eventHandlerTest,this);
         },
         // Function called while the view is hidden
         pagehide : function(){

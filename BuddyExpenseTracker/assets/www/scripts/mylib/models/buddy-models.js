@@ -1,6 +1,7 @@
 ( function(module, $) {
 
 module.Buddy = Backbone.Model.extend({
+	table : module.buddyTable,
 	defaults: {
             name: '',
             number: '',
