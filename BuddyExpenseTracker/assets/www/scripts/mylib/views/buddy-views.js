@@ -62,7 +62,7 @@
             }
             else{
                 $().toastmessage('showToast', {
-                    text     : 'Successfully added buddy',
+                    text     : 'Successfully added buddy.You can add more buddies',
                     sticky   : false,
                     type     : 'success'
                 }); 
