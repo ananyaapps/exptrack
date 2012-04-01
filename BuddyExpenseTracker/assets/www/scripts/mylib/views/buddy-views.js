@@ -40,17 +40,30 @@
         },
 
         formHandler : function (e){
-            var $form,formJSON,formStatus,buddy;
+            var $form,formJSON,formStatus,buddy,count;
             $form = this.$el;
             formJSON = $form.formParams();
             formStatus = $form.ketchup('isValid');
 
             // Check if the form is valid
             if (formStatus === true){
-                //Create a buddy model
-                buddy = new module.Buddy(formJSON);
-                buddy.on('sync',this.modelSync,this);
-                buddy.save();
+                // Add only one buddy
+                if (!_.isNumber(formJSON.count) ){
+                    //Create a buddy model
+                    buddy = new module.Buddy(formJSON);
+                    buddy.on('sync',this.modelSync,this);
+                    buddy.save();
+                }
+                else{
+                    _(_.range(formJSON.count)).each(function(count){
+                        var model,attr={};
+                        _.extend(attr,formJSON,{name : (formJSON.name + count)});
+                        //Create a buddy model
+                        model = new module.Buddy(attr);
+                        model.on('sync',this.modelSync,this);
+                        model.save();
+                    });
+                }
             }
             else{
 
@@ -172,6 +185,11 @@
                 break;                
 
                 case 'Delete':
+                    this.collection.each(function(buddy){
+                        if(buddy.get('sel_status') === true){
+                            buddy.destroy();
+                        }
+                    });
                 break;
 
                 default:
@@ -207,6 +225,11 @@
         initialize : function(){
             this.template = _.template($('#buddy-expense-template').html());
             this.model.on("change",this.modelChange,this);
+            // Model is destroyed, delete the view
+            this.model.on("destroy",function(){
+                this.close();
+            },this);
+
         },
 
         render : function(){
@@ -231,6 +254,7 @@
         //This function can implement unbinding the view's handlers other events
         beforeClose : function(){
             this.model.off("change",this.modelChange);
+            this.model.off("destroy");
         }        
 
     });
