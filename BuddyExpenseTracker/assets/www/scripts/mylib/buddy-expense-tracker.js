@@ -144,6 +144,10 @@ function initAppRouter()
 					case 'pagebeforeshow':
 					break;					
 
+					case 'pageremove':
+						store.view.close();
+					break;
+
 					default:
 					break;
 				}

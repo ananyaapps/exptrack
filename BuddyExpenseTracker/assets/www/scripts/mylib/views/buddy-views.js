@@ -134,13 +134,21 @@
                 }, this);
             
             return this;
-        }
+        },
+        //This function can implement unbinding the view's handlers other events
+        beforeClose : function(){
+
+        }        
 
     });
 
     // Individual item view
     module.expenseView = Backbone.View.extend({
         tagName : 'li',
+
+        events : {
+            
+        },
 
         initialize : function(){
             this.template = _.template($('#buddy-expense-template').html());
@@ -149,7 +157,11 @@
         render : function(){
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
-        }
+        },
+        //This function can implement unbinding the view's handlers other events
+        beforeClose : function(){
+
+        }        
 
     });
 
