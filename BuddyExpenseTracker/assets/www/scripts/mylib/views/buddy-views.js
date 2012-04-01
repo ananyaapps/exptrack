@@ -136,13 +136,10 @@
         render : function(){
             $(this.el).html(this.template());
             this.$list = this.$el.find('ul');
-            // Maintain a list of child views
-            this.buddyViews = [];
 
             _.each(this.collection.models, function (buddy) {
                     var view;
                     view = new module.expenseView({"model":buddy});
-                    this.buddyViews.push(view);
                     this.$list.append(view.render().el);
                 }, this);
             
@@ -153,7 +150,6 @@
         addBuddy : function(buddy,buddies,options){
             var view;
             view = new module.expenseView({"model":buddy});
-            this.buddyViews.push(view);
             this.$list.append(view.render().$el);
             this.trigger("list-refresh");
 
@@ -164,15 +160,9 @@
             action = $(e.target).jqmData('action');
             switch(action){
                 case 'SelectAll':
-                    _.each(this.buddyViews,function(view){
-                        view.setSelState(true);
-                    });
                 break;
 
                 case 'Deselect':
-                    _.each(this.buddyViews,function(view){
-                            view.setSelState(false);
-                        });
                 break;                
 
                 case 'Delete':
@@ -202,13 +192,12 @@
         events : {
             "click button" : function(){
                 this.setSelState();
+                return false;
             }
         },
 
         initialize : function(){
             this.template = _.template($('#buddy-expense-template').html());
-            // item is not selected by default
-            this.selState = false;
         },
 
         render : function(){
@@ -219,7 +208,8 @@
         // Set the selected state. If no arguments are passed then invert the state
         setSelState : function(state){
             // Toggle the selected state, by default.If state param is undefined, then this would be the default action
-            var toggle = true,$button;
+            var toggle = true,$button,sel_status;
+            sel_status = this.model.get('sel_status');
 
             if (state === true){
                 //Dont toggle the state, if this is already selected
@@ -229,7 +219,7 @@
             }
             else if(state === false){
                 //Dont toggle the state, if this is currently not  selected
-                if (this.selState === false){
+                if (sel_status === false){
                     toggle = false;
                 }
             }
@@ -241,9 +231,10 @@
             // todo : optimise : very ugly workaround
             if (toggle === true){
                 // toggle the selected state
-                this.selState = !this.selState;
+                sel_status = !sel_status;
+                this.model.set({"sel_status" : !sel_status},{silent : true});
                 $button = this.$el.find('button');
-                if (this.selState === true){
+                if (sel_status === true){
                     $button.jqmData('theme','b').parent().jqmData('theme','b').
                         removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
                 }

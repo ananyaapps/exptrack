@@ -6,6 +6,8 @@ module.Buddy = Backbone.Model.extend({
             name: '',
             number: '',
             total_expense: 0,
+			// sel_status -> tells if the buddy is selected for editing
+            sel_status : false,
             email: ''
         }
 });
