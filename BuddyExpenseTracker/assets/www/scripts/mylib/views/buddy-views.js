@@ -9,7 +9,7 @@
         clickHandler : function (e){
             //Find out the action
             // Yes..this is a little strange way of getting the action
-            var action = $(e.currentTarget).attr('data-action');
+            var action = $(e.currentTarget).jqmData('action');
             switch (action){
                 case 'AddBuddy1' :
                     $.mobile.showPageLoadingMsg();
@@ -32,7 +32,7 @@
 
         events : {
             "submit " : "formHandler",
-            "click input[data-action='Clear']" : function (){
+            "click input:jqmData(action='Clear')" : function (){
                 //Remove any validation messages
                 this.$el.find('.ketchup-custom').empty();
             }
@@ -120,6 +120,7 @@
     });
 
     module.ExpenseListView = Backbone.View.extend({
+        // todo : somehow this dependency on data should be removed
         attributes: {"data-role": "content"},
 
         initialize : function(){
@@ -224,12 +225,12 @@
                 this.selState = !this.selState;
                 $button = this.$el.find('button');
                 if (this.selState === true){
-                    $button.attr('data-theme', 'b').parent().attr('data-theme', 'b').
+                    $button.jqmData('theme','b').parent().jqmData('theme','b').
                         removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
                 }
                 else{
-                     $button.attr('data-theme', 'd').parent().attr('data-theme', 'd').
-                            removeClass('ui-btn-up-b ui-btn-hover-b').addClass('ui-btn-up-d ui-btn-hover-d');
+                     $button.jqmData('theme','d').parent().jqmData('theme','d').
+                            removeClass('ui-btn-up-b ui-btn-hover-b').addClass('ui-btn-up-d ui-btn-hover-d');                
                 }
             }
 
