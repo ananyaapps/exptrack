@@ -191,13 +191,16 @@
 
         events : {
             "click button" : function(){
-                this.setSelState();
+                // toggle the selected state
+                var sel_status = this.model.get('sel_status');
+                this.model.set('sel_status',!sel_status);
                 return false;
             }
         },
 
         initialize : function(){
             this.template = _.template($('#buddy-expense-template').html());
+            this.model.on("change",this.modelChange,this);
         },
 
         render : function(){
@@ -205,36 +208,11 @@
             return this;
         },
 
-        // Set the selected state. If no arguments are passed then invert the state
-        setSelState : function(state){
-            // Toggle the selected state, by default.If state param is undefined, then this would be the default action
-            var toggle = true,$button,sel_status;
-            sel_status = this.model.get('sel_status');
-
-            if (state === true){
-                //Dont toggle the state, if this is already selected
-                if (this.selState === true){
-                    toggle = false;
-                }
-            }
-            else if(state === false){
-                //Dont toggle the state, if this is currently not  selected
-                if (sel_status === false){
-                    toggle = false;
-                }
-            }
-            else{
-
-            }
-
-            // check if the state needs to be toggled
-            // todo : optimise : very ugly workaround
-            if (toggle === true){
-                // toggle the selected state
-                sel_status = !sel_status;
-                this.model.set({"sel_status" : sel_status},{silent : true});
+        modelChange : function(model,options){
+            // Check what has changed
+            if (options.changes.sel_status === true){
                 $button = this.$el.find('button');
-                if (sel_status === true){
+                if (model.get('sel_status') === true){
                     $button.attr('data-theme','b').parent().attr('data-theme','b').
                         removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
                 }
@@ -243,11 +221,10 @@
                             removeClass('ui-btn-up-b ui-btn-hover-b').addClass('ui-btn-up-d ui-btn-hover-d');                
                 }
             }
-
         },
         //This function can implement unbinding the view's handlers other events
         beforeClose : function(){
-
+            this.model.off("change",this.modelChange);
         }        
 
     });
