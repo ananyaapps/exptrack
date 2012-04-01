@@ -160,9 +160,15 @@
             action = $(e.target).jqmData('action');
             switch(action){
                 case 'SelectAll':
+                    this.collection.each(function(buddy){
+                        buddy.set('sel_status',true);
+                    });
                 break;
 
                 case 'Deselect':
+                    this.collection.each(function(buddy){
+                            buddy.set('sel_status',false);
+                        });
                 break;                
 
                 case 'Delete':
