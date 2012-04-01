@@ -128,6 +128,9 @@
             this.collection.on("add",this.addBuddy, this);
             // Listen to this view's refresh event
             this.on("list-refresh",this.listviewRefresh,this);
+            // IMP : Noe that we are attaching to jquery's event handlers
+            // hence bind the callback to the view, instead of the jQuery's default this
+            this.options.$footer.on("click", "input", _.bind(this.userInput,this));
         },
         render : function(){
             $(this.el).html(this.template());
@@ -154,6 +157,12 @@
             this.trigger("list-refresh");
 
         },
+
+        userInput : function (e){
+            var action;
+            action = $(e.target).jqmData('action');
+        },
+
         listviewRefresh : function (options){
             //somehow these two functions are required to correctly render the listview, after adding a buddy
             this.$list.listview('refresh');
@@ -161,7 +170,7 @@
         },
         //This function can implement unbinding the view's handlers other events
         beforeClose : function(){
-
+            this.collection.off("add",this.addBuddy);
         }        
 
     });
@@ -185,11 +194,6 @@
         render : function(){
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
-        },
-
-        //Handles the selection of a buddy
-        selectHandler : function(e){
-
         },
 
         // Set the selected state. If no arguments are passed then invert the state
