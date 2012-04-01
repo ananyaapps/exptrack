@@ -232,14 +232,14 @@
             if (toggle === true){
                 // toggle the selected state
                 sel_status = !sel_status;
-                this.model.set({"sel_status" : !sel_status},{silent : true});
+                this.model.set({"sel_status" : sel_status},{silent : true});
                 $button = this.$el.find('button');
                 if (sel_status === true){
-                    $button.jqmData('theme','b').parent().jqmData('theme','b').
+                    $button.attr('data-theme','b').parent().attr('data-theme','b').
                         removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
                 }
                 else{
-                     $button.jqmData('theme','d').parent().jqmData('theme','d').
+                     $button.attr('data-theme','d').parent().attr('data-theme','d').
                             removeClass('ui-btn-up-b ui-btn-hover-b').addClass('ui-btn-up-d ui-btn-hover-d');                
                 }
             }
