@@ -139,15 +139,11 @@
 
 <script type="text/template" id="buddy-expenselist-template">
 			<h5 id="EB_Msg"></h5>
-			<div data-role="fieldcontain">
-				<form>
-					<ul id = "EB_BuddyList" data-role="listview" data-filter="true"></ul>
-				</form>
-			</div>
+	<ul id = "EB_BuddyList" data-role="listview" data-filter="true"></ul>				
 </script>
 
 <script type="text/template" id="buddy-expense-template">
-<input type="button"  data-icon="check" data-iconpos="notext" class="buddy_select" data-theme="d" data-index="<%= id %>"/>
+<button type="button"  data-icon="check" data-iconpos="notext" data-theme="d" data-index="<%= id %>"></button>
 <h3 class="buddy_list_item"><%= name %></h3>
 <p class="ui-li-aside" <strong>balance : <%= total_expense %></strong></p>
 </script>
