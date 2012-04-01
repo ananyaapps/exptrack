@@ -1,0 +1,1 @@
+- Add an issue to jquery mobile forum -> to make it possible to update the individual list item

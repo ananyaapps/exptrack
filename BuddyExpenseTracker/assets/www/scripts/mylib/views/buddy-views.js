@@ -124,16 +124,40 @@
 
         initialize : function(){
             this.template = _.template($('#buddy-expenselist-template').html());
+            // Listen to add event on the collection
+            this.collection.on("add",this.addBuddy, this);
+            // Listen to this view's refresh event
+            this.on("list-refresh",this.listviewRefresh,this);
         },
         render : function(){
             $(this.el).html(this.template());
             this.$list = this.$el.find('ul');
+            // Maintain a list of child views
+            this.buddyViews = [];
 
-            _.each(this.model.models, function (buddy) {
-                    this.$list.append(new module.expenseView({"model":buddy}).render().el);
+            _.each(this.collection.models, function (buddy) {
+                    var view;
+                    view = new module.expenseView({"model":buddy});
+                    this.buddyViews.push(view);
+                    this.$list.append(view.render().el);
                 }, this);
             
             return this;
+        },
+        
+        // A new buddy is added, hence collection needs to be updated
+        addBuddy : function(buddy,buddies,options){
+            var view;
+            view = new module.expenseView({"model":buddy});
+            this.buddyViews.push(view);
+            this.$list.append(view.render().$el);
+            this.trigger("list-refresh");
+
+        },
+        listviewRefresh : function (options){
+            //somehow these two functions are required to correctly render the listview, after adding a buddy
+            this.$list.listview('refresh');
+            this.$list.trigger("create");
         },
         //This function can implement unbinding the view's handlers other events
         beforeClose : function(){
@@ -147,16 +171,64 @@
         tagName : 'li',
 
         events : {
-            
+            "click button" : function(){
+                this.setSelState();
+            }
         },
 
         initialize : function(){
             this.template = _.template($('#buddy-expense-template').html());
+            // item is not selected by default
+            this.selState = false;
         },
 
         render : function(){
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
+        },
+
+        //Handles the selection of a buddy
+        selectHandler : function(e){
+
+        },
+
+        // Set the selected state. If no arguments are passed then invert the state
+        setSelState : function(state){
+            // Toggle the selected state, by default.If state param is undefined, then this would be the default action
+            var toggle = true,$button;
+
+            if (state === true){
+                //Dont toggle the state, if this is already selected
+                if (this.selState === true){
+                    toggle = false;
+                }
+            }
+            else if(state === false){
+                //Dont toggle the state, if this is currently not  selected
+                if (this.selState === false){
+                    toggle = false;
+                }
+            }
+            else{
+
+            }
+
+            // check if the state needs to be toggled
+            // todo : optimise : very ugly workaround
+            if (toggle === true){
+                // toggle the selected state
+                this.selState = !this.selState;
+                $button = this.$el.find('button');
+                if (this.selState === true){
+                    $button.attr('data-theme', 'b').parent().attr('data-theme', 'b').
+                        removeClass('ui-btn-up-d ui-btn-hover-d').addClass('ui-btn-up-b ui-btn-hover-b');
+                }
+                else{
+                     $button.attr('data-theme', 'd').parent().attr('data-theme', 'd').
+                            removeClass('ui-btn-up-b ui-btn-hover-b').addClass('ui-btn-up-d ui-btn-hover-d');
+                }
+            }
+
         },
         //This function can implement unbinding the view's handlers other events
         beforeClose : function(){

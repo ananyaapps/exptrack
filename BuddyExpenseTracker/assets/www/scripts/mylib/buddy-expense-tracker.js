@@ -133,7 +133,7 @@ function initAppRouter()
 					case 'pagecreate':
 						$footer = $(page).find("div[data-role='footer']");
 						// footer would be accessbile within the View
-						view = new module.ExpenseListView({"$footer" : $footer,"model" : module.buddies});
+						view = new module.ExpenseListView({"$footer" : $footer,"collection" : module.buddies});
 						store.view = view;
 						$(page).append(view.render().el);
 					break;
