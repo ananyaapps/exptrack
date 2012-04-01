@@ -236,9 +236,10 @@
               handleFn=_self.userHandlers[handler];
             }
             if (handleFn){
-              try { handleFn.apply(_self.userHandlers, [e.type,res,ui,page,e]);
-                bHandled = true;
-              }catch(err){ debug(err); }
+              handleFn.apply(_self.userHandlers, [e.type,res,ui,page,e]);
+              // try { handleFn.apply(_self.userHandlers, [e.type,res,ui,page,e]);
+              //   bHandled = true;
+              // }catch(err){ debug(err); }
             }
           }
           if (bHandled && _self.conf.firstMatchOnly) return false;
