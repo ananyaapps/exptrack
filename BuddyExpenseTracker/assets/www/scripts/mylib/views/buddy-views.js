@@ -162,6 +162,25 @@
         userInput : function (e){
             var action;
             action = $(e.target).jqmData('action');
+            switch(action){
+                case 'SelectAll':
+                    _.each(this.buddyViews,function(view){
+                        view.setSelState(true);
+                    });
+                break;
+
+                case 'Deselect':
+                    _.each(this.buddyViews,function(view){
+                            view.setSelState(false);
+                        });
+                break;                
+
+                case 'Delete':
+                break;
+
+                default:
+                break;
+            }
         },
 
         listviewRefresh : function (options){
