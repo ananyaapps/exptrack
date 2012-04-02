@@ -47,7 +47,7 @@ function initAppRouter()
 		"#AddBuddy(?:[?/](.*))?": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		// "#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
-		"#EditBuddies$": {handler: "expenseListPage", events: "c,bs,h,rm"},
+		"#ExpenseList$": {handler: "expenseListPage", events: "c,bs,h,rm"},
 		},
 		{
 			homePage: function(type,match,ui,page){
