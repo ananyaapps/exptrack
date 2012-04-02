@@ -34,7 +34,7 @@ logger = ( function($) {
 
 ( function(module,$) {
 	//The constants (So called !!)
-	var NAME = 'BuddyExpendeDb', VERSION = '1.0', SIZE = 1000000, BUDDY_TABLE = 'BuddyTb', BUDDYEXPENSE_TABLE = 'BuddyExpenseTb',
+	var NAME = 'BuddyExpendeDb', VERSION = '1.0', SIZE = 5242880, BUDDY_TABLE = 'BuddyTb', BUDDYEXPENSE_TABLE = 'BuddyExpenseTb',
 		db, buddyTable, buddyExpenseTable;
 	buddyTable = {};
 	buddyExpenseTable = {};
