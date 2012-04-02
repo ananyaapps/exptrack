@@ -12,10 +12,14 @@
             var action = $(e.currentTarget).jqmData('action');
             switch (action){
                 case 'AddBuddy1' :
-                    $.mobile.showPageLoadingMsg();
+                    $.mobile.changePage("#AddBuddy");
+                break;
+
+                case 'ExpenseList':
+                    $.mobile.changePage("#ExpenseList");
                 break;
             }
-
+            return false;
             logger.log(action);
         },
 
