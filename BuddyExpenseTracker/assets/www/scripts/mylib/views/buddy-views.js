@@ -169,7 +169,7 @@
         },
 
         userInput : function (e){
-            var action;
+            var action,delModels;
             action = $(e.target).jqmData('action');
             switch(action){
                 case 'SelectAll':
@@ -185,10 +185,11 @@
                 break;                
 
                 case 'Delete':
-                    this.collection.each(function(buddy){
-                        if(buddy.get('sel_status') === true){
-                            buddy.destroy();
-                        }
+                    // models to be deleted
+                    delModels = this.collection.where({sel_status : true})
+                    // Destroy the selected models
+                    _.each(delModels,function(buddy){
+                        buddy.destroy();                            
                     });
                 break;
 
