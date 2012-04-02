@@ -21,8 +21,6 @@ $(document).bind("mobileinit", function() {
 	// todo : Disable only for android based devices
 	logger.log("In mobileinit");
 	initAppRouter();
-	//Initialise database related part
-	module.buddy_db.init();
 	$.mobile.defaultPageTransition = 'none';
 	$.mobile.page.prototype.options.addBackBtn = true;
 	$.support.cors = true;
