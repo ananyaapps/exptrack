@@ -190,11 +190,13 @@
 
                 case 'Delete':
                     // models to be deleted
-                    delModels = this.collection.where({sel_status : true})
-                    // Destroy the selected models
-                    _.each(delModels,function(buddy){
-                        buddy.destroy();                            
-                    });
+                    delModels = this.collection.where({sel_status : true});
+                    if (confirm("Sure to delete " + delModels.length + " entries?")){
+                        // Destroy the selected models
+                        _.each(delModels,function(buddy){
+                            buddy.destroy();                            
+                        });
+                    }
                 break;
 
                 default:
