@@ -62,7 +62,7 @@
                         model = new module.Buddy(attr);
                         model.on('sync',this.modelSync,this);
                         model.save();
-                    });
+                    },this);
                 }
             }
             else{
