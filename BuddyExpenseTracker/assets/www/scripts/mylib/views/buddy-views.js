@@ -3,7 +3,7 @@
     //Home screen view, to encapsulate the home screen
     module.HomeView = Backbone.View.extend({
         events : {
-            "click a" : "clickHandler"
+            "click button" : "clickHandler"
         },
 
         clickHandler : function (e){
@@ -17,6 +17,10 @@
 
                 case 'ExpenseList':
                     $.mobile.changePage("#ExpenseList");
+                break;
+
+                case 'AddExpense':
+                    $.mobile.changePage("#AddExpense");
                 break;
             }
             return false;

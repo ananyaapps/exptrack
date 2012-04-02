@@ -35,11 +35,11 @@
 		</div>
 		<!-- /header -->
 		<div class="ui-grid-a" id="HomeScreenButtons">
-			<a href="#Dummy" data-role="button" data-action="ListExpense">Expense List</a>
-			<a href="#AddBuddy" data-role="button" data-action="AddBuddy1">Add Buddy-1</a>
-			<a href="#AddBuddyPick" data-role="button" data-action="AddBuddy2">Add Buddy-2</a>
-			<a href="#Dummy" data-role="button" data-action="AddExpense">Add Expense</a>
-			<a href="#ExpenseList" data-role="button" data-action="ExpenseList">ExpenseList</a>
+			<button data-action="ListExpense">Expense List</button>
+			<button data-action="AddBuddy1">Add Buddy</button>
+			<button data-action="AddBuddy2">Add Contact</button>
+			<button data-action="ExpenseList">ExpenseList</button>
+			<button data-action="AddExpense">Add Expense</button>
 		</div>
 		<!-- /content -->
 		<div data-role="footer" data-position="fixed"></div>
@@ -48,7 +48,7 @@
 	<!-- Start of page AddBuddy:-->
 	<div data-role="page" id="AddBuddy" data-theme="b">
 		<div data-role="header">
-			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
+			<a href="#HomeScreen" data-icon="home" data-direction="reverse" data-iconpos="notext">Home</a>
 			<h1>Add Buddy</h1>
 		</div>
 		<!-- /header -->
@@ -103,13 +103,66 @@
 	<!-- Start of page ExpenseList:-->
 	<div data-role="page" id="ExpenseList" data-theme="b">
 		<div data-role="header" data-position="fixed">
-			<a href="#HomeScreen" data-icon="home" data-direction="reverse">Home</a>
+			<a href="#HomeScreen" data-icon="home" data-direction="reverse" data-iconpos="notext">Home</a>
 			<h1>Expense List</h1>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
 			<input type="button" class="buddy_button" value="Delete" data-action="Delete" data-inline="true"/>
 			<input type="button" class="buddy_button" value="SelectAll" data-action="SelectAll" data-inline="true"/>
 			<input type="button" class="buddy_button" value="Deselect" data-action="Deselect" data-inline="true"/>
+		</div>
+	</div>
+
+		<!-- Start of page AddExpense:-->
+	<div data-role="page" id="AddExpense" data-theme="b">
+		<div data-role="header" data-position="fixed">
+			<a href="#HomeScreen" data-icon="back" data-direction="reverse" data-iconpos="notext" data-rel="back">Back</a>
+			<h1>Add Expense</h1>
+		</div>
+		<div data-role="content" id="AE_content">
+			<form method="get">
+			<ul data-role="listview">
+				<li data-role="fieldcontain">
+				   <label for="AE_Name_C" class="select">Buddy Name:</label>
+				   <select name="name_c" id="AE_Name_C">
+				      <option value="prasanna">prasanna</option>
+				      <option value="amruta">amruta</option>
+				      <option value="vinay">vinay</option>
+				      <option value="sameer">sameer</option>
+				   </select>
+				</li>
+				<li data-role="fieldcontain">
+					<label for="AE_Name"> Buddy Name* </label>
+					<input id="AE_Name" name="name" placeholder="Buddy Name" type="text" value=""/>
+				</li>
+				<li data-role="fieldcontain">
+					<label for="AE_Amount"> Expense Amount </label>
+					<input id="AE_Amount" name="exp_amount" placeholder="Expense Amount" type="number" value=""/>
+				</li>
+				<li data-role="fieldcontain">
+					<label for="AE_dir">Give/take</label>
+					<select name="dir" id="AE_dir" data-role="slider" data-theme="c">
+						<option value="give">give</option>
+						<option value="take">take</option>
+					</select> 
+				</li>
+				<li data-role="fieldcontain">
+					<label for="AE_Date"> Date </label>
+					<input id="AE_Date" name="exp_date" placeholder="date" type="date" value=""/>
+				</li>
+				<li data-role="fieldcontain">
+				<label for="AE_Desc">Description:</label>
+					<textarea name="exp_desc" id="AE_Desc"></textarea>
+				</li>
+				<li data-role="fieldcontain">
+				<input type="submit" value="Add" data-inline="true" data-theme="b" data-action="Add" class="buddy_button"/>
+				<input type="reset" value="Clear" data-inline="true" data-theme="b" data-action="Clear" class="buddy_button"/>
+				</li>
+			</ul>				
+			</form>
+		</div>
+		<div data-role="footer" data-position="fixed" class="ui-bar">
+			<input type="button" class="buddy_button" value="Delete" data-action="Delete" data-inline="true"/>
 		</div>
 	</div>
 <script type="text/template" id="buddy-form-template">
