@@ -150,35 +150,38 @@
         },
         
         render: function() {
-            // Render the template using default attributes
-             $(this.el).html(this.template(module.Expense.prototype.defaults);
-             // this.$el.trigger("create");
+             var selectView;
+             // Render the template using default attributes
+             $(this.el).html(this.template(module.Expense.prototype.defaults));
+             selectView = new this.BuddySelectView();
+             // Append the select view
+             this.$el.find("li:first").before(selectView.render().el);
+            // Store the reference to child select view, for later reference
+             this.selectView = selectView;
              return this;
         },
         // Define the child view, within this view itself
-        BuddySelectView : Backbone.View.extend(
+        BuddySelectView : Backbone.View.extend({
             tagName : "li",
 
             attributes : {"data-role" : "fieldcontain"},
 
             initialize : function (){
-                this.template = _.template('<label for="AE_Name_C">Buddy Name:</label>
-                    <select name="name_s" id="AE_Name_C">
-                    <% _.each(collection.pluck(\'name\'), function (buddy_name){ %>
-                    <option value="<%= buddy_name %>"><%= buddy_name %></option>
-                    <% }); %>
-                </select>');
+                this.template = _.template('<label for="AE_Name_C">Buddy Name:</label><select name="name_s" id="AE_Name_C"><% _.each(collection.pluck(\'name\'), function (buddy_name){ %><option value="<%= buddy_name %>"><%= buddy_name %></option><% }); %></select>');
             },
 
-          render: function() {
-                    // Render the template using default attributes
-                     $(this.el).html(module.buddies);
-                     // this.$el.trigger("create");
-                     return this;
-                }
-        )
+            render: function() {
+                // Render the template using default attributes
+                $(this.el).html(this.template({"collection" : module.buddies}));
+                return this;
+            }
+        }),
 
-
+        // Function called before this view is called
+        beforeClose : function(){
+            // Close the select view
+            this.selectView.close();
+        }
     });
 
     module.ExpenseListView = Backbone.View.extend({

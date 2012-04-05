@@ -59,7 +59,7 @@ function initAppRouter()
 			},
 
 			addExpensePage : function(type,match,ui,page){
-				var store;
+				var store,addExpenseView;
 				// logger.log(match[1]);
 				if (!arguments.callee.store)
 				{
@@ -69,9 +69,10 @@ function initAppRouter()
 
 				switch(type){
 					case 'pagecreate':
-						addExpenseView = new module.addExpenseView(new module.Expense());
+						addExpenseView = new module.AddExpenseView();
 						store.addExpenseView = addExpenseView;
 						var $container = $(page).find('#AE_content');
+						$container.append(addExpenseView.render().el);
 						
 					break;
 
