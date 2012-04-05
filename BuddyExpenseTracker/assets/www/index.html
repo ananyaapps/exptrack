@@ -120,46 +120,6 @@
 			<h1>Add Expense</h1>
 		</div>
 		<div data-role="content" id="AE_content">
-			<form method="get">
-			<ul data-role="listview">
-				<li data-role="fieldcontain">
-				   <label for="AE_Name_C" class="select">Buddy Name:</label>
-				   <select name="name_c" id="AE_Name_C">
-				      <option value="prasanna">prasanna</option>
-				      <option value="amruta">amruta</option>
-				      <option value="vinay">vinay</option>
-				      <option value="sameer">sameer</option>
-				   </select>
-				</li>
-				<li data-role="fieldcontain">
-					<label for="AE_Name"> Buddy Name* </label>
-					<input id="AE_Name" name="name" placeholder="Buddy Name" type="text" value=""/>
-				</li>
-				<li data-role="fieldcontain">
-					<label for="AE_Amount"> Expense Amount </label>
-					<input id="AE_Amount" name="exp_amount" placeholder="Expense Amount" type="number" value=""/>
-				</li>
-				<li data-role="fieldcontain">
-					<label for="AE_dir">Give/take</label>
-					<select name="dir" id="AE_dir" data-role="slider" data-theme="c">
-						<option value="give">give</option>
-						<option value="take">take</option>
-					</select> 
-				</li>
-				<li data-role="fieldcontain">
-					<label for="AE_Date"> Date </label>
-					<input id="AE_Date" name="exp_date" placeholder="date" type="date" value=""/>
-				</li>
-				<li data-role="fieldcontain">
-				<label for="AE_Desc">Description:</label>
-					<textarea name="exp_desc" id="AE_Desc"></textarea>
-				</li>
-				<li data-role="fieldcontain">
-				<input type="submit" value="Add" data-inline="true" data-theme="b" data-action="Add" class="buddy_button"/>
-				<input type="reset" value="Clear" data-inline="true" data-theme="b" data-action="Clear" class="buddy_button"/>
-				</li>
-			</ul>				
-			</form>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
 			<input type="button" class="buddy_button" value="Delete" data-action="Delete" data-inline="true"/>
@@ -189,6 +149,41 @@
 			</li>
 		</ul>
 </script>	
+
+<script type="text/template" id="buddy-add-expense">
+<ul data-role="listview">
+	<li data-role="fieldcontain">
+
+	</li>
+	<li data-role="fieldcontain">
+		<label for="AE_Name"> Buddy Name* </label>
+		<input id="AE_Name" name="name" placeholder="Buddy Name" type="text" value=""/>
+	</li>
+	<li data-role="fieldcontain">
+		<label for="AE_Amount"> Expense Amount </label>
+		<input id="AE_Amount" name="exp_amount" placeholder="Expense Amount" type="number" value="<%= exp_amount %>"/>
+	</li>
+	<li data-role="fieldcontain">
+		<label for="AE_dir">Give/take</label>
+		<select name="dir" id="AE_dir" data-role="slider" data-theme="c">
+			<option value="give">give</option>
+			<option value="take">take</option>
+		</select> 
+	</li>
+	<li data-role="fieldcontain">
+		<label for="AE_Date"> Date </label>
+		<input id="AE_Date" name="exp_date" placeholder="date" type="date" value=""/>
+	</li>
+	<li data-role="fieldcontain">
+	<label for="AE_Desc">Description:</label>
+		<textarea name="exp_desc" id="AE_Desc"><%= exp_desc %></textarea>
+	</li>
+	<li data-role="fieldcontain">
+	<input type="submit" value="Add" data-inline="true" data-theme="b" data-action="Add"/>
+	<input type="reset" value="Clear" data-inline="true" data-theme="b" data-action="Clear"/>
+	</li>
+</ul>				
+</script>
 
 <script type="text/template" id="buddy-expenselist-template">
 			<h5 id="EB_Msg"></h5>

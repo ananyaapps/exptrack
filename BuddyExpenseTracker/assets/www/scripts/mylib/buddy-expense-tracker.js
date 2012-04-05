@@ -46,6 +46,7 @@ function initAppRouter()
 		// "#AddBuddy$": {handler: "addBuddyPage", events: "i,c,h,bs,rm"},
 		"#AddBuddyPick$": {handler: "addBuddyPickPage", events: "i,h"},
 		"#ExpenseList$": {handler: "expenseListPage", events: "c,bs,h,rm"},
+		"#AddExpense$": {handler: "addExpensePage", events: "c,bs,h,rm"},
 		},
 		{
 			homePage: function(type,match,ui,page){
@@ -55,6 +56,30 @@ function initAppRouter()
 
 					break;
 				}
+			},
+
+			addExpensePage : function(type,match,ui,page){
+				var store;
+				// logger.log(match[1]);
+				if (!arguments.callee.store)
+				{
+					arguments.callee.store = {};
+				}
+				store = arguments.callee.store;
+
+				switch(type){
+					case 'pagecreate':
+						addExpenseView = new module.addExpenseView(new module.Expense());
+						store.addExpenseView = addExpenseView;
+						var $container = $(page).find('#AE_content');
+						
+					break;
+
+					default:
+					break;
+
+				}
+
 			},
 			
 			//Function to handle transitions to & from addBuddyPage

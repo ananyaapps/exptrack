@@ -115,7 +115,7 @@
                 // add model to collection
                 this.collection.add(model);
                 // unbind the event handlers
-                model.on('sync',this.modelSync);
+                model.off('sync',this.modelSync);
             }
             // Clear the form 
             this.pagehide();
@@ -140,6 +140,47 @@
         }
     });
 
+    module.AddExpenseView = Backbone.View.extend({
+        tagName:"form", 
+        
+        attributes: {"method" : "post"},
+
+        initialize: function() {
+            this.template = _.template($('#buddy-add-expense').html());
+        },
+        
+        render: function() {
+            // Render the template using default attributes
+             $(this.el).html(this.template(module.Expense.prototype.defaults);
+             // this.$el.trigger("create");
+             return this;
+        },
+        // Define the child view, within this view itself
+        BuddySelectView : Backbone.View.extend(
+            tagName : "li",
+
+            attributes : {"data-role" : "fieldcontain"},
+
+            initialize : function (){
+                this.template = _.template('<label for="AE_Name_C">Buddy Name:</label>
+                    <select name="name_s" id="AE_Name_C">
+                    <% _.each(collection.pluck(\'name\'), function (buddy_name){ %>
+                    <option value="<%= buddy_name %>"><%= buddy_name %></option>
+                    <% }); %>
+                </select>');
+            },
+
+          render: function() {
+                    // Render the template using default attributes
+                     $(this.el).html(module.buddies);
+                     // this.$el.trigger("create");
+                     return this;
+                }
+        )
+
+
+    });
+
     module.ExpenseListView = Backbone.View.extend({
         // todo : somehow this dependency on data should be removed
         attributes: {"data-role": "content"},
@@ -159,6 +200,7 @@
             this.$list = this.$el.find('ul');
 
             _.each(this.collection.models, function (buddy) {
+                    // prasanna : todo : imp : should the child views be destroyed also, during this view close 
                     var view;
                     view = new module.expenseView({"model":buddy});
                     this.$list.append(view.render().el);
@@ -208,6 +250,7 @@
             }
         },
 
+        // This event handler is called after list-refresh event 
         listviewRefresh : function (options){
             //somehow these two functions are required to correctly render the listview, after adding a buddy
             this.$list.listview('refresh');

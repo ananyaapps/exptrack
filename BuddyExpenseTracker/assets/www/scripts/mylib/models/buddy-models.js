@@ -17,6 +17,21 @@ module.Buddies = Backbone.Collection.extend({
     table : module.buddyTable
 });	
 
+module.Expense = Backbone.Model.extend({
+    table : module.buddyExpenseTable,
+    
+    defaults : {
+        exp_amount : '',
+        exp_date : new Date(),
+        exp_desc : ''
+    }
+});
+
+module.Expenses = Backbone.Collection.extend({
+    model : module.Expense,
+    table : module.buddyTable
+});
+
 module.buddies = new module.Buddies();
 // Fetch the current collection from the database
 module.buddies.fetch();
