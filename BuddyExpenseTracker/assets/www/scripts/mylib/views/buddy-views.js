@@ -146,33 +146,59 @@
         attributes: {"method" : "post"},
 
         initialize: function() {
+            var selectView;
             this.template = _.template($('#buddy-add-expense').html());
+            // Keep the select view ready
+            selectView = new this.BuddySelectView();
+            selectView.render();
+            selectView.on("change:select",this.selectChange,this);
+            // Store the reference to child select view, for later reference
+            this.selectView = selectView;
+        },
+
+        // Function that is called when the selected value changes
+        selectChange : function(data){
+            // Set the name filed to select fied value
+            this.$el.find("#AE_Name").val(data);
         },
         
         render: function() {
-             var selectView;
-             // Render the template using default attributes
-             $(this.el).html(this.template(module.Expense.prototype.defaults));
-             selectView = new this.BuddySelectView();
-             // Append the select view
-             this.$el.find("li:first").before(selectView.render().el);
-            // Store the reference to child select view, for later reference
-             this.selectView = selectView;
-             return this;
+                // Render the template using default attributes
+                $(this.el).html(this.template(this.model.toJSON()));
+
+                // Append the select view
+                this.$el.find("li:first").before(this.selectView.el);
+                // Trigger the initial change event, toupdate the selected buddy filed
+                this.selectView.trigger("change:select", this.selectView.getSelectValue());
+                
+                return this;
         },
         // Define the child view, within this view itself
         BuddySelectView : Backbone.View.extend({
             tagName : "li",
 
+            events : {
+                "change select" : function(e){
+                    // Trigger the change event
+                    this.trigger("change:select", $(e.target).val());
+                }
+            },
+
             attributes : {"data-role" : "fieldcontain"},
 
             initialize : function (){
-                this.template = _.template('<label for="AE_Name_C">Buddy Name:</label><select name="name_s" id="AE_Name_C"><% _.each(collection.pluck(\'name\'), function (buddy_name){ %><option value="<%= buddy_name %>"><%= buddy_name %></option><% }); %></select>');
+                this.template = _.template('<label for="AE_Name_S">Buddy Name:</label><select name="name_s" id="AE_Name_S"><% _.each(collection.pluck(\'name\'), function (buddy_name){ %><option value="<%= buddy_name %>"><%= buddy_name %></option><% }); %></select>');
+            },
+
+            getSelectValue : function(){
+                return this.$selectMenu.val();
             },
 
             render: function() {
                 // Render the template using default attributes
                 $(this.el).html(this.template({"collection" : module.buddies}));
+                // Cache the selectMenu
+                this.$selectMenu = this.$el.find("select");
                 return this;
             }
         }),
@@ -181,6 +207,7 @@
         beforeClose : function(){
             // Close the select view
             this.selectView.close();
+            this.selectView.off("change:select",this.selectChange);
         }
     });
 

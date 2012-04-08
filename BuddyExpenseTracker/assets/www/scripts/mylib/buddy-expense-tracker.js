@@ -69,7 +69,8 @@ function initAppRouter()
 
 				switch(type){
 					case 'pagecreate':
-						addExpenseView = new module.AddExpenseView();
+						// Associate a default model with the view
+						addExpenseView = new module.AddExpenseView({model : new module.Expense()});
 						store.addExpenseView = addExpenseView;
 						var $container = $(page).find('#AE_content');
 						$container.append(addExpenseView.render().el);

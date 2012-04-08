@@ -19,11 +19,19 @@ module.Buddies = Backbone.Collection.extend({
 
 module.Expense = Backbone.Model.extend({
     table : module.buddyExpenseTable,
+
+// Format of the date to be displayed
+    date_format : "dd M,y",
     
     defaults : {
         exp_amount : '',
         exp_date : new Date(),
         exp_desc : ''
+    },
+
+    toJSON : function(){
+        var json = Backbone.Model.prototype.toJSON.call(this);
+        return json;
     }
 });
 
