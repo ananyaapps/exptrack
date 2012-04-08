@@ -1,12 +1,13 @@
 <!-- Author : Prasanna Bhat -->
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 	<title>Buddy Expense Tracker</title>
 	<link rel="stylesheet" href="css/jquery.mobile.css" />
 	<link rel="stylesheet" href="css/buddy-expense-tracker.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.ketchup.css" />
 	<link rel="stylesheet" href="css/jquery.toastmessage.css" />
+	<link rel="stylesheet" href="css/mobiscroll.css" />
 	<script src="scripts/stdlib/jquery.js"></script>
 	<script src="scripts/stdlib/jquery.toastmessage.js"></script>
 	<script type="text/javascript" src="scripts/stdlib/jquery.mobile.router.js"></script>
@@ -24,6 +25,7 @@
 	<script type="text/javascript" charset="utf-8" src="scripts/mylib/buddy-pickbuddy.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/mylib/buddy-editbuddy.js"></script>
 	<script type="text/javascript" src="scripts/stdlib/jquery.mobile.js"></script>
+	<script type="text/javascript" src="scripts/stdlib/mobiscroll.js"></script>
 	<!-- <script src="http://192.168.0.153:8080/target/target-script-min.js"></script>  -->
 </head>
 <body>
@@ -169,7 +171,7 @@
 	</li>
 	<li data-role="fieldcontain">
 		<label for="AE_Date"> Date </label>
-		<input id="AE_Date" name="exp_date" placeholder="date" type="date" value=""/>
+		<input id="AE_Date" name="exp_date" placeholder="date" type="text" class="mobiscroll" value="<%= displayDate %>"/>
 	</li>
 	<li data-role="fieldcontain">
 	<label for="AE_Desc">Description:</label>

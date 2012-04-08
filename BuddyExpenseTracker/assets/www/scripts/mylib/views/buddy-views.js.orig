@@ -170,9 +170,13 @@
                 this.$el.find("li:first").before(this.selectView.el);
                 // Trigger the initial change event, toupdate the selected buddy filed
                 this.selectView.trigger("change:select", this.selectView.getSelectValue());
+<<<<<<< Updated upstream
+                
+=======
 
                 // Display the date picker 
                 this.$el.find("#AE_Date").scroller({dateFormat : "dd M,y",theme : "android-ics",mode : "clickpick"});
+>>>>>>> Stashed changes
                 return this;
         },
         // Define the child view, within this view itself

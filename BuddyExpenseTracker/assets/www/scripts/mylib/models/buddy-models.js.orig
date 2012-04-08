@@ -31,7 +31,11 @@ module.Expense = Backbone.Model.extend({
 
     toJSON : function(){
         var json = Backbone.Model.prototype.toJSON.call(this);
+<<<<<<< Updated upstream
+        return json;
+=======
         return _.extend(json, {displayDate: $.scroller.formatDate(this.date_format,this.get('exp_date'))});
+>>>>>>> Stashed changes
     }
 });
 
