@@ -21,7 +21,7 @@ module.Expense = Backbone.Model.extend({
     table : module.buddyExpenseTable,
 
 // Format of the date to be displayed
-    date_format : "dd M,y",
+    date_format : "%d %b %y",
     
     defaults : {
         exp_amount : '',
@@ -31,6 +31,7 @@ module.Expense = Backbone.Model.extend({
 
     toJSON : function(){
         var json = Backbone.Model.prototype.toJSON.call(this);
+        _.extend(json,{displayDate : $.mobile.datebox.prototype._formatter(this.date_format,this.get('exp_date'))});
         return json;
     }
 });

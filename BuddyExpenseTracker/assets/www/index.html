@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="css/jquery.mobile.css" />
 	<link rel="stylesheet" href="css/buddy-expense-tracker.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.ketchup.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.mobile.datebox.css" />
 	<link rel="stylesheet" href="css/jquery.toastmessage.css" />
 	<script src="scripts/stdlib/jquery.js"></script>
 	<script src="scripts/stdlib/jquery.toastmessage.js"></script>
@@ -24,6 +25,7 @@
 	<script type="text/javascript" charset="utf-8" src="scripts/mylib/buddy-pickbuddy.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/mylib/buddy-editbuddy.js"></script>
 	<script type="text/javascript" src="scripts/stdlib/jquery.mobile.js"></script>
+	<script type="text/javascript" src="scripts/stdlib/jquery.mobile.datebox.js"></script>
 	<!-- <script src="http://192.168.0.153:8080/target/target-script-min.js"></script>  -->
 </head>
 <body>
@@ -169,12 +171,15 @@
 	</li>
 	<li data-role="fieldcontain">
 		<label for="AE_Date"> Date </label>
-		<input id="AE_Date" name="exp_date" placeholder="date" type="date" value=""/>
+		<input id="AE_Date" name="exp_date" placeholder="date" type="date" value="<%= displayDate %>" data-role="datebox" data-options='{"centerWindow": true,"useClearButton": true, "collapseButtons": true,"focusMode": true}'/>
+
 	</li>
+	
 	<li data-role="fieldcontain">
 	<label for="AE_Desc">Description:</label>
 		<textarea name="exp_desc" id="AE_Desc"><%= exp_desc %></textarea>
 	</li>
+
 	<li data-role="fieldcontain">
 	<input type="submit" value="Add" data-inline="true" data-theme="b" data-action="Add"/>
 	<input type="reset" value="Clear" data-inline="true" data-theme="b" data-action="Clear"/>

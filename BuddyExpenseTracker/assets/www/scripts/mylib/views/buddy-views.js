@@ -165,6 +165,10 @@
         render: function() {
                 // Render the template using default attributes
                 $(this.el).html(this.template(this.model.toJSON()));
+                // Set the input format, format is stored inside the model
+                this.$el.find("#AE_Date").data('options').dateFormat = this.model.date_format;
+                var date = this.$el.find('#AE_Date').data();
+                logger.log(date);
 
                 // Append the select view
                 this.$el.find("li:first").before(this.selectView.el);
